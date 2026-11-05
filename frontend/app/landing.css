@@ -1,0 +1,192 @@
+/* ───────────────────────────────────────────────────────────
+   salmon · landing page
+   Scoped styles. Uses only Cupertino '84 primitives from
+   globals.css (--ink / --paper / --salmon, --body / --chrome,
+   hard offset shadows, zero radius, 4px grid). No new aesthetic.
+   ─────────────────────────────────────────────────────────── */
+
+/* The global body { height: 100% } clips long pages. The wrapper
+   grows to content and scrolls instead of being pinned. */
+.lwrap {
+  min-height: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+}
+.lwin {
+  width: 100%;
+  max-width: 880px;
+  height: auto;
+}
+
+/* ── shared section chrome ───────────────────────────────── */
+.lsec {
+  padding: 24px 24px 32px;
+  border-bottom: 1px solid var(--ink);
+}
+.lsechead {
+  opacity: 0.6;
+  margin: 0 0 16px;
+}
+.lsecfoot {
+  font-family: var(--body);
+  font-size: 19px;
+  line-height: 1.25;
+  margin: 16px 0 0;
+}
+
+.lgrid {
+  display: grid;
+  gap: 12px;
+}
+.l3 { grid-template-columns: repeat(3, 1fr); }
+.l2 { grid-template-columns: repeat(2, 1fr); }
+
+.lcard {
+  border: 1px solid var(--ink);
+  box-shadow: 1px 1px 0 var(--ink);
+  background: var(--paper);
+  padding: 12px;
+}
+.lcardtag {
+  font-family: var(--chrome);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+.lcardhead {
+  font-family: var(--body);
+  font-size: 19px;
+  line-height: 1.2;
+  margin: 0 0 6px;
+}
+.lcardbody {
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+/* ── 1 · hero ────────────────────────────────────────────── */
+.lhero {
+  padding: 40px 24px 32px;
+  border-bottom: 1px solid var(--ink);
+}
+.lkicker {
+  color: var(--salmon);
+  margin: 0 0 16px;
+}
+.lhead {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.05;
+  margin: 0 0 16px;
+  max-width: 18ch;
+}
+.lsub {
+  font-family: var(--body);
+  font-size: 21px;
+  line-height: 1.25;
+  margin: 0 0 24px;
+  max-width: 44ch;
+}
+.lsearch {
+  display: flex;
+  border: 1px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  max-width: 640px;
+}
+.lsearchin {
+  flex: 1;
+  min-width: 0;
+}
+.lsearch .btn {
+  border-left: 1px solid var(--ink);
+}
+.lhint {
+  opacity: 0.6;
+  margin: 12px 0 0;
+}
+
+/* ── 4 · who it's for ────────────────────────────────────── */
+
+/* ── 5 · sample results ──────────────────────────────────── */
+.lquery {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  margin: 0 0 8px;
+}
+.lquerytext {
+  color: var(--salmon);
+}
+.lres { box-shadow: 1px 1px 0 var(--ink); }
+
+/* widen the result row so pills get their own line */
+.lresrow {
+  grid-template-columns: 28px 1fr auto;
+}
+.lpills {
+  grid-column: 2 / 4;
+  margin-top: 6px;
+}
+.lpill {
+  font-size: 14px;
+  cursor: default;
+}
+.lpill:hover { background: var(--ink); color: var(--paper); }
+.lpill.sel:hover { background: var(--ink); }
+.lpill-near {
+  background: var(--paper);
+  opacity: 0.75;
+}
+.lpill-near:hover { background: var(--paper); color: var(--ink); }
+.lpill-miss {
+  background: var(--paper);
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+.lpill-miss:hover { background: var(--paper); color: var(--ink); }
+.llegend {
+  opacity: 0.6;
+  margin: 12px 0 0;
+}
+.lstepn {
+  font-family: var(--chrome);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--salmon);
+  margin: 0 0 8px;
+}
+
+/* ── 6 · footer ──────────────────────────────────────────── */
+.lfoot {
+  padding: 32px 24px;
+  text-align: center;
+}
+.lfoottag {
+  font-family: var(--body);
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+}
+.lfootnote {
+  opacity: 0.6;
+  margin: 0 0 16px;
+}
+.lfootlink {
+  display: inline-block;
+}
+
+/* ── responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .l3, .l2 { grid-template-columns: 1fr; }
+  .lhead { font-size: 30px; }
+  .lsub { font-size: 19px; }
+  .lsearch { flex-direction: column; }
+  .lsearch .btn { border-left: 0; border-top: 1px solid var(--ink); }
+  .lresrow { grid-template-columns: 22px 1fr auto; }
+}
