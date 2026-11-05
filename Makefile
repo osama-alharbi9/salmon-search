@@ -28,6 +28,7 @@ fetch:
 build-data:
 	cd backend && $(BIN)/python -m salmon.parse
 	cd backend && $(BIN)/python -m salmon.enrich
+	cd backend && $(BIN)/python -m salmon.embed
 
 lint:
 	cd backend && $(BIN)/ruff check .
