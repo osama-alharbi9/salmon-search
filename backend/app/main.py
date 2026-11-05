@@ -19,13 +19,28 @@ from pydantic import BaseModel
 # load ANTHROPIC_API_KEY from backend/.env before the client is constructed
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
 
+from starlette.middleware.sessions import SessionMiddleware  # noqa: E402
+
 from salmon import engine          # noqa: E402  (after dotenv)
 from app import llm                # noqa: E402
 from app import vds                # noqa: E402
+from app import auth               # noqa: E402
+from app import saved              # noqa: E402
+from app.db import init_db         # noqa: E402
 
 app = FastAPI(title="salmon API", version="1.0")
 
+# Create tables if they don't exist. Do NOT let a transient DB hiccup crash the
+# whole process at import (that would kill the container with no useful log and
+# take search, which needs no DB, down with it). Log and continue; the auth/saved
+# routes will surface a clear error if the DB is truly unreachable.
 import sys as _sys
+try:
+    init_db()
+    print("[startup] init_db ok", flush=True)
+except Exception as _e:                       # noqa: BLE001
+    print(f"[startup] init_db FAILED (auth/saved routes will 500 until DB is up): {_e}",
+          file=_sys.stderr, flush=True)
 
 # Warm the e5 embedding model ONCE at startup. The model is a module global in
 # vds.py, but if it loads lazily on the first /api/vds_search request, that
@@ -45,7 +60,8 @@ if os.environ.get("SALMON_SKIP_WARMUP", "").lower() not in ("1", "true", "yes"):
         print(f"[startup] e5 warmup FAILED (first search will be slow): {_e}",
               file=_sys.stderr, flush=True)
 
-# allow the Next.js dev server (and configurable origins) to call us.
+# allow the Next.js dev server (and configurable origins) to call us. Cookies
+# require allow_credentials + explicit origins (a "*" origin forbids credentials).
 _origins = os.environ.get("SALMON_CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -54,6 +70,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Authlib stores the OAuth state/nonce in this signed session during the redirect.
+app.add_middleware(SessionMiddleware, secret_key=auth.SESSION_SECRET,
+                   same_site=auth.COOKIE_SAMESITE, https_only=auth.SECURE_COOKIES)
+
+app.include_router(auth.router)
+app.include_router(saved.router)
+app.include_router(saved.works_router)
+app.include_router(saved.history_router)
+
 
 # ---- request models ---------------------------------------------------------
 class Turn(BaseModel):
