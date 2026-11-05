@@ -6,20 +6,22 @@ API_PORT ?= 8000
 UI_PORT  ?= 3000
 
 .DEFAULT_GOAL := help
-.PHONY: help install data fetch build-data api lint
+.PHONY: help install data fetch build-data api ui run lint
 
 help:
-	@echo "install      create backend/.venv, install Python dependencies, create backend/.env"
+	@echo "install      create backend/.venv, install Python and Node dependencies, create backend/.env"
 	@echo "data         download the TVTropes dump (about 6 GB) and build everything"
 	@echo "fetch        download the dump only"
 	@echo "build-data   build artifacts and embeddings from a dump already on disk"
-	@echo "api          start the API (:8000)"
-	@echo "lint         run ruff"
+	@echo "run          start the API (:8000) and the web UI (:3000)"
+	@echo "api, ui      start one of them"
+	@echo "lint         run ruff and eslint"
 
 install:
 	$(PYTHON) -m venv $(VENV)
 	$(BIN)/pip install --upgrade pip
 	$(BIN)/pip install -r backend/requirements-dev.txt
+	cd frontend && npm ci
 	@test -f backend/.env || cp backend/.env.example backend/.env
 
 data: fetch build-data
@@ -36,5 +38,12 @@ build-data:
 api:
 	cd backend && $(BIN)/uvicorn app.main:app --port $(API_PORT)
 
+ui:
+	cd frontend && npm run dev -- --port $(UI_PORT)
+
+run:
+	$(MAKE) -j2 api ui
+
 lint:
 	cd backend && $(BIN)/ruff check .
+	cd frontend && npm run lint
