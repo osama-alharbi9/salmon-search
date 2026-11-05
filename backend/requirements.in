@@ -1,0 +1,20 @@
+# Direct dependencies. requirements.txt is the pinned lock generated from this file:
+#   uv pip compile requirements.in --universal --python-version 3.12 \
+#     --index-strategy unsafe-best-match \
+#     --extra-index-url https://download.pytorch.org/whl/cpu -o requirements.txt
+fastapi
+uvicorn[standard]
+anthropic
+python-dotenv
+numpy
+scipy
+sqlalchemy
+psycopg[binary]
+bcrypt
+itsdangerous
+authlib
+httpx
+email-validator
+huggingface-hub
+sentence-transformers
+torch
