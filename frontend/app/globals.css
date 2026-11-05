@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────
+   Cupertino '84 — 1-bit design system (see /DESIGN.md)
+   Pure black/white + one salmon accent. Bitmap type. Zero radius.
+   Fonts (VT323, Silkscreen) are loaded via next/font in layout.tsx
+   and exposed as --font-vt323 / --font-silkscreen.
+   ─────────────────────────────────────────────────────────── */
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --salmon: #00d0c0;
+  --link: #0000ee;
+  --body: var(--font-vt323), "Geneva", monospace;
+  --chrome: var(--font-silkscreen), monospace;
+}
+
+* { box-sizing: border-box; border-radius: 0 !important; }
+html, body { margin: 0; height: 100%; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  image-rendering: pixelated;
+  background-image: repeating-conic-gradient(#000 0 25%, #fff 0 50%);
+  background-size: 2px 2px;
+}
+
+.win { background: var(--paper); border: 1px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); display: flex; flex-direction: column; }
+.titlebar { height: 22px; flex: 0 0 22px; display: flex; align-items: center; position: relative;
+  border-bottom: 1px solid var(--ink);
+  background: repeating-linear-gradient(to bottom, var(--ink) 0 1px, var(--paper) 1px 3px); }
+.titlebar .close { width: 11px; height: 11px; margin-left: 6px; background: var(--paper); border: 1px solid var(--ink); cursor: pointer; }
+.titlebar .ttl { position: absolute; left: 50%; transform: translateX(-50%); background: var(--paper); padding: 0 8px;
+  font-family: var(--chrome); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+.statusbar { flex: 0 0 auto; border-top: 1px solid var(--ink); padding: 4px 8px; display: flex; justify-content: space-between;
+  font-family: var(--chrome); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; line-height: 14px; }
+.statusbar .count { background: var(--ink); color: var(--paper); padding: 0 4px; }
+
+.chrome { font-family: var(--chrome); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.btn { font-family: var(--chrome); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 14px;
+  cursor: pointer; border: 0; background: var(--ink); color: var(--paper); }
+.btn:active { transform: translate(1px, 1px); }
+.btn:disabled { color: var(--ink); cursor: default; background-image: repeating-conic-gradient(#000 0 25%, #fff 0 50%); background-size: 2px 2px; }
+
+.field { border: 0; outline: 0; background: var(--paper); color: var(--ink); font-family: var(--body);
+  font-size: 19px; line-height: 1.25; padding: 8px; -webkit-font-smoothing: none; caret-color: var(--salmon); }
+.field::placeholder { color: var(--ink); opacity: 0.45; }
+
+.msg { margin: 0 0 12px; font-size: 19px; line-height: 1.25; animation: reveal 120ms linear; }
+.msg .who { display: block; margin-bottom: 2px; }
+.msg.user .bubble { background: var(--ink); color: var(--paper); padding: 6px 8px; white-space: pre-wrap; }
+.msg.user .who { color: var(--ink); }
+.msg.bot .bubble { background: var(--paper); border: 1px solid var(--ink); box-shadow: 1px 1px 0 var(--ink); padding: 8px 10px; white-space: pre-wrap; }
+.msg.bot .who { color: var(--salmon); }
+
+.reslist { margin-top: 8px; border: 1px solid var(--ink); }
+.res { display: grid; grid-template-columns: 28px 1fr auto; align-items: baseline; column-gap: 8px; padding: 6px 8px; border-top: 1px dotted var(--ink); }
+.res:first-child { border-top: 0; }
+.res .rank { font-family: var(--chrome); font-size: 11px; }
+.res .ttl { font-size: 19px; line-height: 1.15; }
+.res .ns { font-family: var(--chrome); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; }
+.res .why { grid-column: 2 / 4; font-size: 16px; line-height: 1.2; opacity: 0.8; margin-top: 2px; }
+.res .bar { grid-column: 1 / 4; height: 4px; margin-top: 4px; background-image: repeating-conic-gradient(#000 0 25%, #fff 0 50%); background-size: 2px 2px; }
+.res .bar i { display: block; height: 100%; background: var(--salmon); }
+
+.link { color: var(--link); text-decoration: underline; cursor: pointer; }
+.link:active { background: var(--link); color: var(--paper); text-decoration: none; }
+
+.trope { display: inline-block; font-size: 16px; line-height: 1.1; border: 1px solid var(--ink); padding: 1px 5px; margin: 0 4px 4px 0; cursor: pointer; background: var(--paper); }
+.trope:hover { background: var(--salmon); }
+.trope.sel { background: var(--ink); color: var(--paper); }
+
+.detail { grid-column: 1 / 4; margin-top: 6px; border: 1px solid var(--ink); background: var(--paper); padding: 6px 8px; }
+.detail .dhead { font-family: var(--chrome); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.7; margin-bottom: 4px; }
+
+.caret { display: inline-block; width: 9px; height: 16px; background: var(--salmon); vertical-align: -2px; animation: blink 0.9s steps(2, start) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes reveal { from { opacity: 0; } to { opacity: 1; } }
+
+::-webkit-scrollbar { width: 14px; }
+::-webkit-scrollbar-track { background: var(--paper); border-left: 1px solid var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--ink); border: 3px solid var(--paper); }
