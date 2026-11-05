@@ -27,6 +27,7 @@ fetch:
 
 build-data:
 	cd backend && $(BIN)/python -m salmon.parse
+	cd backend && $(BIN)/python -m salmon.profiles
 	cd backend && $(BIN)/python -m salmon.enrich
 	cd backend && $(BIN)/python -m salmon.embed
 
