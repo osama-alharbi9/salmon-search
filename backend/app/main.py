@@ -123,6 +123,15 @@ def health():
     return {"ok": True, "model": llm.MODEL}
 
 
+@app.get("/api/config")
+def config():
+    """Optional features this server has set up, so the UI can hide the ones that
+    would fail: Google sign-in needs OAuth credentials, the vibe field needs an
+    Anthropic key. Trope search needs neither."""
+    return {"google": auth.google_enabled(),
+            "vibe": bool(os.environ.get("ANTHROPIC_API_KEY"))}
+
+
 @app.post("/api/ask")
 def ask(body: AskBody):
     text = body.q.strip()
