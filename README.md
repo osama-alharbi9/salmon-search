@@ -94,7 +94,7 @@ backend/
   tests/             Offline tests on an invented fixture dataset
   data/              Dump, built artifacts, SQLite file (not committed)
 frontend/            Next.js web UI
-docs/DESIGN.md       The Cupertino '84 design system used by the UI
+docs/DESIGN.md       The UI design system: salmon and warm grey colours, Archivo and Inter type, pill controls, page layouts
 Makefile             install, data, run, test, lint
 ```
 
@@ -131,4 +131,3 @@ The embedding model, [intfloat/multilingual-e5-small](https://huggingface.co/int
 - Near matches in the web UI, as the search CLI already does
 - A filter for parsing noise, such as episode names listed as tropes
 - Database migrations with Alembic
-- A smooth-type option for readers who find bitmap fonts hard to read
