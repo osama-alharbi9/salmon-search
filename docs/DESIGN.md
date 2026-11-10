@@ -6,7 +6,7 @@
 | Replaces | Cupertino '84 (1-bit, bitmap type, zero radius) |
 | Product | salmon, trope-based search for films, TV, anime, games and books |
 | Fonts | Archivo (display), Inter (text). Both Google Fonts, SIL Open Font License |
-| Accent | `--salmon` `#FF8F70` with deep ink `#3A1209` |
+| Accent | `--salmon` `#00D0C0` with deep ink `#052B28` |
 | Preview | A static specimen page with every token and component (kept outside the repo) |
 
 The structure, spacing, type scale, component shapes and interaction patterns follow the web design language of Wise (wise.com), studied from public screenshots on Mobbin. Wise is a reference only. salmon uses none of Wise's logo, illustrations, photography, brand name, copy, Wise Sans font, or brand colours. Every colour, font, word and image here is salmon's own.
@@ -15,7 +15,7 @@ The structure, spacing, type scale, component shapes and interaction patterns fo
 
 ## 0. The system in 60 seconds
 
-- **One accent, one deep.** A bright salmon fill for primary buttons and highlights, always with deep oxblood text on it. The deep colour also carries links, selected states and one dark band per page.
+- **One accent, one deep.** A bright teal fill for primary buttons and highlights, always with deep teal-black text on it. The deep colour also carries links, selected states and one dark band per page.
 - **Big type for statements, calm type for reading.** Heavy uppercase Archivo for short headlines only. Inter for everything people read or click.
 - **Everything you press is a pill.** Buttons, chips, search fields, nav highlights, tabs' segmented control.
 - **Surfaces, not lines.** White and warm grey bands alternate instead of dividers. Cards have no shadows. Shadows only on things that float: menus, modals, toasts.
@@ -48,14 +48,14 @@ One salmon hue ramp, warm greys, and four status colours. Hex values are the sou
 
 | Token | Hex | Role |
 |---|---|---|
-| `--salmon-50` | `#FFF4F0` | Body text on the deep band, toast text |
-| `--salmon-100` | `#FFE6DE` | Secondary button fill, resolved and matched chips, focus ring on dark |
-| `--salmon-200` | `#FFD3C5` | Secondary button hover |
-| `--salmon-500` | `#FF8F70` | **The accent.** Primary fill, highlight, full-match rank disc, salmon band |
-| `--salmon-600` | `#F47A58` | Primary hover |
-| `--salmon-700` | `#E8694A` | Primary pressed |
-| `--salmon-900` | `#4E1D12` | Raised surfaces and icon discs on the deep band, inverse button hover |
-| `--salmon-950` | `#3A1209` | **Deep ink.** Text on salmon, links, selected states, meter fill, deep band, focus ring |
+| `--salmon-50` | `#EBFBF9` | Body text on the deep band, toast text |
+| `--salmon-100` | `#CCF5F1` | Secondary button fill, resolved and matched chips, focus ring on dark |
+| `--salmon-200` | `#A3EDE6` | Secondary button hover |
+| `--salmon-500` | `#00D0C0` | **The accent.** Primary fill, highlight, full-match rank disc, salmon band |
+| `--salmon-600` | `#00BDAE` | Primary hover |
+| `--salmon-700` | `#00A99B` | Primary pressed |
+| `--salmon-900` | `#0A3D39` | Raised surfaces and icon discs on the deep band, inverse button hover |
+| `--salmon-950` | `#052B28` | **Deep ink.** Text on salmon, links, selected states, meter fill, deep band, focus ring |
 | `--grey-0` | `#FFFFFF` | Page |
 | `--grey-50` | `#FAF8F6` | Hover on white rows, disabled input fill, dashed "add" cards |
 | `--grey-100` | `#F2EEEA` | Grey bands, cards on white, active nav pill, neutral pills, icon discs |
@@ -82,9 +82,9 @@ Components use only these names. This block replaces the `:root` in `frontend/ap
 ```css
 :root {
   /* primitives */
-  --salmon-50: #FFF4F0;  --salmon-100: #FFE6DE; --salmon-200: #FFD3C5;
-  --salmon-500: #FF8F70; --salmon-600: #F47A58; --salmon-700: #E8694A;
-  --salmon-900: #4E1D12; --salmon-950: #3A1209;
+  --salmon-50: #EBFBF9;  --salmon-100: #CCF5F1; --salmon-200: #A3EDE6;
+  --salmon-500: #00D0C0; --salmon-600: #00BDAE; --salmon-700: #00A99B;
+  --salmon-900: #0A3D39; --salmon-950: #052B28;
   --grey-0: #FFFFFF; --grey-50: #FAF8F6; --grey-100: #F2EEEA; --grey-150: #ECE8E4;
   --grey-200: #E7E2DD; --grey-300: #D9D3CD; --grey-500: #8C837D; --grey-600: #6E6560;
   --grey-700: #514944; --grey-900: #1C1613;
@@ -149,38 +149,38 @@ Every text and background pair the system uses, computed with the WCAG 2.x relat
 | `--grey-900` #1C1613 | `--grey-100` #F2EEEA | text on grey bands and cards | 15.50 | 4.5 | AAA |
 | `--grey-900` #1C1613 | `--grey-50` #FAF8F6 | hovered rows | 16.89 | 4.5 | AAA |
 | `--grey-900` #1C1613 | `--grey-200` #E7E2DD | hovered neutral pills | 13.91 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--salmon-500` #FF8F70 | display headline on the salmon band | 8.02 | 3 | AAA |
-| `--grey-900` #1C1613 | `--salmon-100` #FFE6DE | text on tinted panels | 15.02 | 4.5 | AAA |
+| `--grey-900` #1C1613 | `--salmon-500` #00D0C0 | display headline on the salmon band | 9.19 | 3 | AAA |
+| `--grey-900` #1C1613 | `--salmon-100` #CCF5F1 | text on tinted panels | 15.25 | 4.5 | AAA |
 | `--grey-900` #1C1613 | `--red-50` #FDECEA | error banner body | 15.65 | 4.5 | AAA |
 | `--grey-900` #1C1613 | `--green-50` #E6F4EC | success panel body | 15.78 | 4.5 | AAA |
 | `--grey-900` #1C1613 | `--yellow-100` #FFF1C2 | weak-match chip label | 15.86 | 4.5 | AAA |
 | `--grey-700` #514944 | white | secondary text, meta | 8.80 | 4.5 | AAA |
 | `--grey-700` #514944 | `--grey-100` | meta on grey cards | 7.62 | 4.5 | AAA |
 | `--grey-700` #514944 | `--grey-50` | meta on hovered rows | 8.31 | 4.5 | AAA |
-| `--grey-700` #514944 | `--salmon-100` | chip meta (work counts) | 7.39 | 4.5 | AAA |
+| `--grey-700` #514944 | `--salmon-100` | chip meta (work counts) | 7.50 | 4.5 | AAA |
 | `--grey-700` #514944 | `--yellow-100` | weak-match chip meta | 7.80 | 4.5 | AAA |
 | `--grey-700` #514944 | `--red-50` | error banner secondary line | 7.69 | 4.5 | AAA |
 | `--grey-700` #514944 | `--green-50` | success panel secondary line | 7.76 | 4.5 | AAA |
 | `--grey-600` #6E6560 | white | placeholders, tertiary text | 5.69 | 4.5 | AA |
 | `--grey-600` #6E6560 | `--grey-100` | tertiary text on grey | 4.93 | 4.5 | AA |
 | `--grey-600` #6E6560 | `--grey-50` | placeholder in disabled field | 5.37 | 4.5 | AA |
-| `--salmon-950` #3A1209 | `--salmon-500` #FF8F70 | primary button label | 7.41 | 4.5 | AAA |
-| `--salmon-950` | `--salmon-600` #F47A58 | primary label, hover | 6.12 | 4.5 | AA |
-| `--salmon-950` | `--salmon-700` #E8694A | primary label, pressed | 5.16 | 4.5 | AA |
-| `--salmon-950` | `--salmon-100` #FFE6DE | secondary label, resolved chips | 13.87 | 4.5 | AAA |
-| `--salmon-950` | `--salmon-200` #FFD3C5 | secondary label, hover | 12.10 | 4.5 | AAA |
-| `--salmon-950` | white | links, tertiary labels, active tab | 16.53 | 4.5 | AAA |
-| `--salmon-950` | `--grey-100` | active nav label, links on grey | 14.32 | 4.5 | AAA |
-| `--salmon-950` | `--grey-50` | links on hovered rows | 15.60 | 4.5 | AAA |
-| `--salmon-950` | `--grey-200` | neutral pill hover | 12.85 | 4.5 | AAA |
-| `--salmon-950` | `--yellow-100` | weak-match chip label | 14.65 | 4.5 | AAA |
-| `--salmon-500` #FF8F70 | `--salmon-950` #3A1209 | headings and links on the deep band | 7.41 | 4.5 | AAA |
-| `--salmon-50` #FFF4F0 | `--salmon-950` | body on the deep band, inverse button label | 15.31 | 4.5 | AAA |
-| `--salmon-100` #FFE6DE | `--salmon-950` | focus ring and outline button on the deep band | 13.87 | 3 | AAA |
-| `--salmon-50` | `--salmon-900` #4E1D12 | text on raised cards inside the deep band | 12.89 | 4.5 | AAA |
-| `--salmon-500` | `--salmon-900` | icons on raised discs in the deep band | 6.24 | 3 | AA |
-| `--salmon-50` | `--grey-900` #1C1613 | toast text | 16.57 | 4.5 | AAA |
-| `--salmon-500` | `--grey-900` | toast action pill against the toast | 8.02 | 3 | AAA |
+| `--salmon-950` #052B28 | `--salmon-500` #00D0C0 | primary button label | 7.80 | 4.5 | AAA |
+| `--salmon-950` | `--salmon-600` #00BDAE | primary label, hover | 6.43 | 4.5 | AA |
+| `--salmon-950` | `--salmon-700` #00A99B | primary label, pressed | 5.17 | 4.5 | AA |
+| `--salmon-950` | `--salmon-100` #CCF5F1 | secondary label, resolved chips | 12.95 | 4.5 | AAA |
+| `--salmon-950` | `--salmon-200` #A3EDE6 | secondary label, hover | 11.44 | 4.5 | AAA |
+| `--salmon-950` | white | links, tertiary labels, active tab | 15.19 | 4.5 | AAA |
+| `--salmon-950` | `--grey-100` | active nav label, links on grey | 13.16 | 4.5 | AAA |
+| `--salmon-950` | `--grey-50` | links on hovered rows | 14.34 | 4.5 | AAA |
+| `--salmon-950` | `--grey-200` | neutral pill hover | 11.80 | 4.5 | AAA |
+| `--salmon-950` | `--yellow-100` | weak-match chip label | 13.46 | 4.5 | AAA |
+| `--salmon-500` #00D0C0 | `--salmon-950` #052B28 | headings and links on the deep band | 7.80 | 4.5 | AAA |
+| `--salmon-50` #EBFBF9 | `--salmon-950` | body on the deep band, inverse button label | 14.25 | 4.5 | AAA |
+| `--salmon-100` #CCF5F1 | `--salmon-950` | focus ring and outline button on the deep band | 12.95 | 3 | AAA |
+| `--salmon-50` | `--salmon-900` #0A3D39 | text on raised cards inside the deep band | 11.32 | 4.5 | AAA |
+| `--salmon-500` | `--salmon-900` | icons on raised discs in the deep band | 6.20 | 3 | AA |
+| `--salmon-50` | `--grey-900` #1C1613 | toast text | 16.79 | 4.5 | AAA |
+| `--salmon-500` | `--grey-900` | toast action pill against the toast | 9.19 | 3 | AAA |
 | `--red-600` #B42318 | white | error messages, destructive labels | 6.57 | 4.5 | AA |
 | `--red-600` | `--red-50` | error banner title, unknown-chip meta | 5.75 | 4.5 | AA |
 | `--red-600` | `--grey-100` | error text on grey surfaces | 5.70 | 4.5 | AA |
@@ -195,12 +195,12 @@ Every text and background pair the system uses, computed with the WCAG 2.x relat
 | `--grey-500` | `--grey-100` | input border on grey bands (UI part) | 3.22 | 3 | AA UI |
 | `--grey-500` | `--grey-150` #ECE8E4 | disabled button label | 3.05 | none (disabled) | exempt |
 | `--grey-500` | `--grey-50` | disabled field text | 3.50 | none (disabled) | exempt |
-| `--salmon-950` | white | focus ring (UI part) | 16.53 | 3 | AA UI |
-| `--meter-fill` #3A1209 | `--meter-track` #E7E2DD | coverage meter segments | 12.85 | 3 | AA UI |
+| `--salmon-950` | white | focus ring (UI part) | 15.19 | 3 | AA UI |
+| `--meter-fill` #052B28 | `--meter-track` #E7E2DD | coverage meter segments | 11.80 | 3 | AA UI |
 
 Intentionally below 3:1, with the reason:
 
-- `--salmon-500` on white is **2.23:1**. Salmon is never used for text, icons or thin lines on white. As a button fill the 7.41:1 label identifies the button, so the fill edge does not need 3:1 (WCAG 1.4.11 note on text-identified controls). The same holds for Wise's green.
+- `--salmon-500` on white is **1.95:1**. Salmon is never used for text, icons or thin lines on white. As a button fill the 7.41:1 label identifies the button, so the fill edge does not need 3:1 (WCAG 1.4.11 note on text-identified controls). The same holds for Wise's green.
 - `--grey-200` hairlines on white (1.29:1) and `--grey-300` (1.48:1) are decorative separators. No meaning depends on seeing them.
 
 ### 2.4 Colour rules

@@ -19,9 +19,9 @@
 
 :root {
   /* primitives */
-  --salmon-50: #FFF4F0;  --salmon-100: #FFE6DE; --salmon-200: #FFD3C5;
-  --salmon-500: #FF8F70; --salmon-600: #F47A58; --salmon-700: #E8694A;
-  --salmon-900: #4E1D12; --salmon-950: #3A1209;
+  --salmon-50: #EBFBF9;  --salmon-100: #CCF5F1; --salmon-200: #A3EDE6;
+  --salmon-500: #00D0C0; --salmon-600: #00BDAE; --salmon-700: #00A99B;
+  --salmon-900: #0A3D39; --salmon-950: #052B28;
   --grey-0: #FFFFFF; --grey-50: #FAF8F6; --grey-100: #F2EEEA; --grey-150: #ECE8E4;
   --grey-200: #E7E2DD; --grey-300: #D9D3CD; --grey-500: #8C837D; --grey-600: #6E6560;
   --grey-700: #514944; --grey-900: #1C1613;

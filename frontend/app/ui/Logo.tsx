@@ -16,8 +16,8 @@ export function FishMark({ className }: { className?: string }) {
       aria-hidden="true"
       focusable="false"
     >
-      <path d={FISH_BODY} fill="#FF8F70" />
-      <rect x="2" y="3" width="1" height="1" fill="#3A1209" />
+      <path d={FISH_BODY} fill="#00D0C0" />
+      <rect x="2" y="3" width="1" height="1" fill="#052B28" />
     </svg>
   );
 }
