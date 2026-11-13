@@ -25,6 +25,15 @@ def test_health(client):
     assert client.get("/api/health").json()["ok"] is True
 
 
+def test_config_reports_optional_features(client, monkeypatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    body = client.get("/api/config").json()
+    assert body["vibe"] is False
+    assert isinstance(body["google"], bool)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    assert client.get("/api/config").json()["vibe"] is True
+
+
 def test_search_needs_no_keys_and_no_login(client, fake_model):
     r = client.post("/api/vds_search", json={"items": ["found family", "the caper"]})
     assert r.status_code == 200
