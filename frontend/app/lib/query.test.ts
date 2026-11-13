@@ -10,12 +10,14 @@ import {
   countLabel,
   dedupeItems,
   filterLabel,
+  isDescription,
   isFilterItem,
   mediaIcon,
   mediaLabel,
   MEDIUM_ALIASES,
   parseQueryParam,
   safeNext,
+  splitDescription,
   splitItems,
   tropeHref,
   workHref,
@@ -199,4 +201,23 @@ test("links and counts", () => {
   assert.equal(safeNext(null, "/"), "/");
   assert.equal(authHref("login", "/app?q=a"), "/login?next=%2Fapp%3Fq%3Da");
   assert.equal(authHref("signup"), "/signup");
+});
+
+test("long typed text counts as a description, short text and titles do not", () => {
+  assert.equal(isDescription("a ragtag crew of smugglers on a spaceship hiding a fugitive"), true);
+  assert.equal(isDescription("found family, heist, morally grey lead"), true);
+  assert.equal(isDescription("true companions"), false);
+  assert.equal(isDescription("the office"), false);
+  assert.equal(isDescription("like The Lord of the Rings and the Two Towers"), false);
+  assert.equal(isDescription("a + b + c + d + e + f + g"), false);
+});
+
+test("splitDescription breaks a description into phrases", () => {
+  assert.deepEqual(splitDescription("found family, heist with a twist and a morally grey lead."), [
+    "found family",
+    "heist",
+    "a twist",
+    "a morally grey lead",
+  ]);
+  assert.deepEqual(splitDescription("time travel; stable time loop\nmovies only"), ["time travel", "stable time loop", "movies only"]);
 });

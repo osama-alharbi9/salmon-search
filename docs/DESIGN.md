@@ -435,9 +435,9 @@ Anatomy, left to right inside one field: search icon 24, chips (inline, wrapping
 |---|---|
 | Field | min-height 64, padding 8 8 8 20, fill white, inset 1 px `--grey-500`, radius `full` while it is one line, 32 once chips wrap |
 | Chips | 40 tall, gap 8, see 5.4 |
-| Text input | 16/24, placeholder "Add a trope, or a title like Firefly", `aria-label="Add a trope or a title"` |
+| Text input | 16/24, placeholder "Add a trope, a title like Firefly, or describe a story", `aria-label="Add a trope or a title"` |
 | Search button | primary L, inside the field on `md`+, full width under the field on mobile |
-| Helper line | 14/20 `--text-secondary`, 8 below: "Press Enter to add. Join several with +. Put like before a one-word title." |
+| Helper line | 14/20 `--text-secondary`, 8 below: "Press Enter to add. Join several with +, or describe a story in a sentence and salmon picks the tropes." Text of seven or more words, or four or more with a comma, is a description: Claude turns it into trope chips when the server has a key, otherwise it is split on commas and joining words. |
 | Vibe link | text button "Describe a vibe instead" at the right of the helper line; opens the vibe panel (5.3.1) |
 
 Behaviour:
@@ -729,7 +729,7 @@ Target: WCAG 2.2 AA everywhere, AAA contrast for body text where the palette all
 | Where | Old | New |
 |---|---|---|
 | `/app` empty heading | "Describe a vibe below, salmon turns it into tropes…" | display: "What story are you after?" body: "Add tropes in plain words, or a title. salmon ranks 85,633 works by how many of them each one has." |
-| Composer placeholder | "add a trope or phrase, or a title like Firefly" | "Add a trope, or a title like Firefly" |
+| Composer placeholder | "add a trope or phrase, or a title like Firefly" | "Add a trope, a title like Firefly, or describe a story" |
 | Results summary | "4232 works cover some of 3 tropes, fullest first:" | h2 "4,232 works" + "have at least 1 of your 3 tropes. Showing the top 25, fullest first." |
 | Title expansion | "expanded Firefly into tropes." | "Firefly became 12 tropes. Show them" |
 | Medium bar | "MEDIUM: FILM ✕ · RESULTS LIMITED TO THIS MEDIUM" | "Only film" + "Clear filter" |

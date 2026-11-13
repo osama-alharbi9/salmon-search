@@ -59,6 +59,32 @@ export function dedupeItems(items: string[]): string[] {
 }
 
 /**
+ * True when typed text reads like a description of a story rather than one
+ * trope or title: seven or more words, or four or more with a comma or
+ * semicolon. Text with + or starting with "like" is never a description.
+ */
+export function isDescription(text: string): boolean {
+  const t = text.trim();
+  if (!t || t.includes("+") || /^like\s/i.test(t)) return false;
+  const words = t.split(/\s+/).length;
+  return words >= 7 || (words >= 4 && /[,;\n]/.test(t));
+}
+
+/**
+ * Split a description into trope-sized phrases without a model: on commas,
+ * semicolons, line breaks, sentence ends and joining words (and, with, but,
+ * plus). Used when the server has no Claude key, or Claude returns nothing.
+ */
+export function splitDescription(text: string): string[] {
+  return dedupeItems(
+    text
+      .split(/[,;\n]+|[.!?]+(?:\s+|$)|\s+(?:and|with|but|plus)\s+/i)
+      .map((s) => s.trim())
+      .filter((s) => s.length >= 3),
+  );
+}
+
+/**
  * Split the q value of /app?q= (and ?trope=) into search items.
  *
  * URLSearchParams turns a literal + into a space, which collapsed README links

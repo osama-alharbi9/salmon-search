@@ -2,7 +2,15 @@
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type Ref } from "react";
 import { api, errorMessage, isAbortError, isApiError, type VdsSearchResponse } from "@/app/lib/api";
-import { appHref, countLabel, dedupeItems, formatCount, parseQueryParam } from "@/app/lib/query";
+import {
+  appHref,
+  countLabel,
+  dedupeItems,
+  formatCount,
+  isDescription,
+  parseQueryParam,
+  splitDescription,
+} from "@/app/lib/query";
 import { useAuthHref, useSession } from "@/app/lib/session";
 import {
   Banner,
@@ -80,6 +88,7 @@ export function SearchPage({ seeded }: { seeded: boolean }) {
   const [live, setLive] = useState("");
   const [googleFailed, setGoogleFailed] = useState(false);
   const [vibeOpen, setVibeOpen] = useState(false);
+  const [reading, setReading] = useState(false);
   const [openTitles, setOpenTitles] = useState<ReadonlySet<string>>(new Set());
   const [saveOpen, setSaveOpen] = useState(false);
   const [seq, setSeq] = useState(0);
@@ -319,19 +328,50 @@ export function SearchPage({ seeded }: { seeded: boolean }) {
   }, [status, shown]);
 
   // ── composer actions ──
+  /**
+   * A described story becomes several trope phrases: Claude reads it when the
+   * server has a key, otherwise (or when Claude returns nothing) the text is
+   * split on commas and joining words. Returns only phrases not yet chips.
+   */
+  const describe = async (text: string): Promise<string[]> => {
+    let phrases: string[] = [];
+    if (config.vibe) {
+      setReading(true);
+      try {
+        const r = await api.vibe(text);
+        if (!r.error) phrases = r.phrases.map((p) => p.trim()).filter(Boolean);
+      } catch {
+        // Fall through to the plain split.
+      } finally {
+        setReading(false);
+      }
+    }
+    if (!phrases.length) phrases = splitDescription(text);
+    return newItems(phrases.join(" + "), chipsRef.current);
+  };
+
   const addText = (text: string) => {
+    setComposerError(null);
+    if (isDescription(text)) {
+      void describe(text).then((items) => {
+        if (!items.length) return;
+        setChips((cs) => [...cs, ...items.map(chipFor)]);
+        setLive(`Added ${countLabel(items.length, "trope")} from your description. Check them, then search.`);
+      });
+      return;
+    }
     const items = newItems(text, chipsRef.current);
     if (!items.length) return;
     setChips((cs) => [...cs, ...items.map(chipFor)]);
-    setComposerError(null);
   };
 
   const removeChip = (id: number) => setChips((cs) => cs.filter((c) => c.id !== id));
 
-  const searchNow = () => {
-    const extra = newItems(draft, chipsRef.current);
-    if (extra.length) setChips((cs) => [...cs, ...extra.map(chipFor)]);
+  const searchNow = async () => {
+    const text = draft;
     setDraft("");
+    const extra = isDescription(text) ? await describe(text) : newItems(text, chipsRef.current);
+    if (extra.length) setChips((cs) => [...cs, ...extra.map(chipFor)]);
     runSearch([...chipsRef.current.map((c) => c.text), ...extra], { url: "push", focus: true, record: true });
   };
 
@@ -455,9 +495,10 @@ export function SearchPage({ seeded }: { seeded: boolean }) {
         }}
         onAdd={addText}
         onRemove={removeChip}
-        onSearch={searchNow}
+        onSearch={() => void searchNow()}
         onStop={stop}
         busy={status === "searching"}
+        reading={reading}
         error={composerError}
         inputRef={inputRef}
         helpAction={

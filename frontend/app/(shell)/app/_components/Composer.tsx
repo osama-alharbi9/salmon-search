@@ -26,6 +26,8 @@ export type ComposerProps = {
   onSearch: () => void;
   onStop: () => void;
   busy: boolean;
+  /** Claude is turning a described story into tropes. */
+  reading?: boolean;
   /** "Add a trope or a title first." after Search with nothing. */
   error: string | null;
   inputRef: RefObject<HTMLInputElement | null>;
@@ -52,6 +54,7 @@ export function Composer({
   onSearch,
   onStop,
   busy,
+  reading = false,
   error,
   inputRef,
   helpAction,
@@ -160,7 +163,7 @@ export function Composer({
           onChange={(e) => change(e.target.value)}
           onKeyDown={inputKey}
           onPaste={paste}
-          placeholder="Add a trope, or a title like Firefly"
+          placeholder="Add a trope, a title like Firefly, or describe a story"
           aria-label="Add a trope or a title"
           aria-describedby={error ? `${ERROR_ID} ${HELP_ID}` : HELP_ID}
           aria-invalid={error ? true : undefined}
@@ -170,7 +173,7 @@ export function Composer({
           enterKeyHint="enter"
         />
         <div className="composer-actions">
-          <Button size="l" loading={busy} loadingLabel="Searching" onClick={onSearch}>
+          <Button size="l" loading={busy || reading} loadingLabel={reading ? "Reading" : "Searching"} onClick={onSearch}>
             Search
           </Button>
           {busy && (
@@ -187,7 +190,7 @@ export function Composer({
         </p>
       )}
       <div className="comp-help">
-        <span id={HELP_ID}>Press Enter to add. Join several with +. Put like before a one-word title.</span>
+        <span id={HELP_ID}>Press Enter to add. Join several with +, or describe a story in a sentence and salmon picks the tropes.</span>
         {helpAction}
       </div>
     </div>
