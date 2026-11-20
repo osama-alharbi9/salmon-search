@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 // of the screen's size) spreads the ripples, and each frame tints their slopes
 // sky blue. The canvas is multiplied over the page, so calm water is white and
 // changes nothing, the text stays readable, and clicks pass straight through.
-// A faint caustic net moves under it all the time. Every tint stays under 10%.
+// A faint caustic net moves under it all the time. Every tint stays under 14%.
 // three is loaded on demand. Under reduced motion, or without WebGL, nothing is drawn.
 
 const VERT = `
@@ -74,7 +74,7 @@ void main() {
   float ripple = shade * 2.0 + length(g) * 0.6;
   vec2 p = vUv * vec2(aspect, 1.0) * 6.0 + g * 40.0; // ripples bend the net
   float net = caustic(p, time * 0.25);
-  float k = clamp(net * 0.10 + ripple, 0.0, 0.10);
+  float k = clamp(net * 0.14 + ripple, 0.0, 0.14);
   vec3 pool = vec3(0.302, 0.592, 0.949);
   gl_FragColor = vec4(mix(vec3(1.0), pool, k), 1.0);
 }`;
@@ -212,7 +212,7 @@ export function Water() {
         const y = 1 - e.clientY / window.innerHeight;
         if (last) {
           const dist = Math.hypot(x - last.x, y - last.y);
-          const s = Math.min(0.012, 0.003 + dist * 0.2);
+          const s = Math.min(0.018, 0.004 + dist * 0.3);
           if (pending) {
             pending.tx = x;
             pending.ty = y;
