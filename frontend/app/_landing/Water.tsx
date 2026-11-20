@@ -59,7 +59,7 @@ void main() {
   vec2 g = vec2(r - l, u - d);
   float shade = max(dot(g, normalize(vec2(1.0, -1.0))), 0.0);
   float rim = length(g);
-  float k = clamp(shade * 3.5 + rim * 1.2, 0.0, 0.16);
+  float k = clamp(shade * 2.0 + rim * 0.6, 0.0, 0.08);
   vec3 pool = vec3(0.302, 0.592, 0.949);
   gl_FragColor = vec4(mix(vec3(1.0), pool, k), 1.0);
 }`;
@@ -187,7 +187,7 @@ export function Water() {
         const y = 1 - e.clientY / window.innerHeight;
         if (last) {
           const dist = Math.hypot(x - last.x, y - last.y);
-          const s = Math.min(0.08, 0.02 + dist * 1.2);
+          const s = Math.min(0.05, 0.012 + dist * 0.8);
           if (pending) {
             pending.tx = x;
             pending.ty = y;
