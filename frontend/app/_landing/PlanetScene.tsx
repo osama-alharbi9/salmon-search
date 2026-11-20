@@ -3,8 +3,9 @@ import { useEffect, useRef } from "react";
 import { FISH_BODY } from "../ui/Logo";
 
 // The landing planet in three.js: a sphere that turns on a tilted axis with a
-// painterly surface from 3D noise (so it has no seams), and 8 coral fish
-// coins, real lit discs with thickness, orbiting it on a tilted ring. three is
+// painterly surface from 3D noise (so it has no seams), and a tilted ring of
+// orbiters: coral fish coins (lit discs with thickness) mixed with pixel-art
+// voxel symbols, a gold star, a pink heart and a lilac lightning bolt. three is
 // loaded on demand after the page is up. Until it draws, or when WebGL is
 // missing, the CSS planet underneath shows instead. Reduced motion draws one
 // still frame; nothing animates while the scene is off screen.
@@ -79,7 +80,60 @@ void main() {
 }
 `;
 
-const COINS = 8;
+/** What sits in each of the 8 places on the ring, in orbit order. */
+const ORBITERS = ["coin", "star", "heart", "coin", "bolt", "star", "coin", "heart"] as const;
+type Kind = (typeof ORBITERS)[number];
+
+/** Pixel art for the voxel symbols, one string per row, # is a filled cell. */
+const PIXELS: Record<Exclude<Kind, "coin">, { rows: string[]; color: number; glow: number; size: number }> = {
+  star: {
+    rows: [
+      ".....#.....",
+      "....###....",
+      "....###....",
+      "###########",
+      ".#########.",
+      "..#######..",
+      "...#####...",
+      "..###.###..",
+      "..##...##..",
+      ".#.......#.",
+    ],
+    color: 0xffb400,
+    glow: 0x7a3a00,
+    size: 0.6,
+  },
+  heart: {
+    rows: [
+      ".##...##.",
+      "####.####",
+      "#########",
+      "#########",
+      ".#######.",
+      "..#####..",
+      "...###...",
+      "....#....",
+    ],
+    color: 0xff3a64,
+    glow: 0x5a0a1c,
+    size: 0.5,
+  },
+  bolt: {
+    rows: [
+      "....###",
+      "...###.",
+      "..###..",
+      ".######",
+      "....##.",
+      "...##..",
+      "..##...",
+      ".##....",
+    ],
+    color: 0x8a5cff,
+    glow: 0x2a1670,
+    size: 0.46,
+  },
+};
 const ORBIT = 1.7; // orbit radius, planet radius is 1
 const COIN_R = 0.27;
 const COIN_T = 0.06;
@@ -135,7 +189,11 @@ export function PlanetScene() {
     let cleanup = () => {};
     let cancelled = false;
 
-    Promise.all([import("three"), import("three/examples/jsm/environments/RoomEnvironment.js")]).then(([THREE, { RoomEnvironment }]) => {
+    Promise.all([
+      import("three"),
+      import("three/examples/jsm/environments/RoomEnvironment.js"),
+      import("three/examples/jsm/utils/BufferGeometryUtils.js"),
+    ]).then(([THREE, { RoomEnvironment }, { mergeGeometries }]) => {
       if (cancelled) return;
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
       try {
@@ -197,18 +255,58 @@ export function PlanetScene() {
       const spin = new THREE.Group();
       ring.add(spin);
       scene.add(ring);
-      for (let i = 0; i < COINS; i++) {
+      // voxel symbols: one merged geometry of cubes per pixel-art shape, centred
+      const disposables: { dispose: () => void }[] = [];
+      const voxels = {} as Record<Exclude<Kind, "coin">, InstanceType<typeof THREE.Mesh>>;
+      for (const [kind, art] of Object.entries(PIXELS) as [Exclude<Kind, "coin">, (typeof PIXELS)["star"]][]) {
+        const cols = art.rows[0].length;
+        const cell = art.size / cols;
+        const cubes: InstanceType<typeof THREE.BoxGeometry>[] = [];
+        art.rows.forEach((row, y) => {
+          [...row].forEach((ch, x) => {
+            if (ch !== "#") return;
+            const b = new THREE.BoxGeometry(cell, cell, cell * 2);
+            b.translate((x - (cols - 1) / 2) * cell, ((art.rows.length - 1) / 2 - y) * cell, 0);
+            cubes.push(b);
+          });
+        });
+        const geo = mergeGeometries(cubes)!;
+        cubes.forEach((b) => b.dispose());
+        const mat = new THREE.MeshStandardMaterial({
+          color: art.color,
+          emissive: art.glow,
+          emissiveIntensity: 0.3,
+          metalness: 0.1,
+          roughness: 0.45,
+          flatShading: true,
+        });
+        disposables.push(geo, mat);
+        voxels[kind] = new THREE.Mesh(geo, mat);
+      }
+
+      // each orbiter turns slowly on its own axis so its depth shows
+      const flippers: { obj: InstanceType<typeof THREE.Group>; rate: number; phase: number }[] = [];
+      ORBITERS.forEach((kind, i) => {
         const pivot = new THREE.Group();
-        pivot.rotation.y = (i / COINS) * Math.PI * 2;
+        pivot.rotation.y = (i / ORBITERS.length) * Math.PI * 2;
         const holder = new THREE.Group();
         holder.position.z = ORBIT;
         holder.rotation.y = 0.35; // never quite edge-on
-        const coin = new THREE.Mesh(coinGeo, [sideMat, faceMat, faceMat]);
-        coin.rotation.z = Math.PI / 2; // faces point along the orbit
-        holder.add(coin);
+        const flip = new THREE.Group();
+        let item: InstanceType<typeof THREE.Object3D>;
+        if (kind === "coin") {
+          item = new THREE.Mesh(coinGeo, [sideMat, faceMat, faceMat]);
+          item.rotation.z = Math.PI / 2; // faces point along the orbit
+        } else {
+          item = voxels[kind].clone();
+          item.rotation.y = Math.PI / 2; // faces point along the orbit
+        }
+        flip.add(item);
+        holder.add(flip);
         pivot.add(holder);
         spin.add(pivot);
-      }
+        flippers.push({ obj: flip, rate: kind === "coin" ? 0.35 : 0.6 + (i % 3) * 0.15, phase: i * 1.3 });
+      });
 
       const fit = () => {
         const w = host.clientWidth;
@@ -230,6 +328,7 @@ export function PlanetScene() {
       const draw = () => {
         planet.rotation.y = (t / TURN) * Math.PI * 2;
         spin.rotation.y = (t / LAP) * Math.PI * 2;
+        for (const f of flippers) f.obj.rotation.y = Math.sin(t * f.rate + f.phase) * 0.9;
         renderer.render(scene, camera);
       };
       const loop = (now: number) => {
@@ -269,6 +368,7 @@ export function PlanetScene() {
         reduce.removeEventListener("change", kick);
         host.removeAttribute("data-ready");
         coinGeo.dispose();
+        disposables.forEach((d) => d.dispose());
         planet.geometry.dispose();
         (planet.material as InstanceType<typeof THREE.ShaderMaterial>).dispose();
         faceMat.dispose();
