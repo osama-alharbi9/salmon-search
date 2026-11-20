@@ -13,6 +13,7 @@ import { Planet } from "./_landing/Planet";
 import { ResultsBand } from "./_landing/ResultsBand";
 import { FilterSplit, TitleSplit } from "./_landing/Splits";
 import { StatsRow } from "./_landing/StatsRow";
+import { Water } from "./_landing/Water";
 import "./_landing/landing.css";
 
 // The landing page (DESIGN.md 9.1). Copy is final copy from the landing copy
@@ -131,6 +132,7 @@ const FAQ: AccordionItem[] = [
 export default function Landing() {
   return (
     <div className="lp-page">
+      <Water />
       <header>
         <MarketingNav id="lp-nav" />
       </header>

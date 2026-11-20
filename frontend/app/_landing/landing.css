@@ -401,3 +401,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
   .lp-deck-stage { padding: 0 0 40px; }
   .lp-deck[data-live] .lp-deck-stage { padding: 16px 0 12px; }
 }
+
+/* the water surface over the page (Water.tsx): white where calm, multiplied, so it only ever tints */
+.lp-water { position: fixed; inset: 0; z-index: 65; pointer-events: none; mix-blend-mode: multiply; }
+.lp-water canvas { display: block; width: 100%; height: 100%; }
