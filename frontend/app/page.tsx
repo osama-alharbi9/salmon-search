@@ -8,7 +8,6 @@ import { DATA_NOTES_URL, EXAMPLE_ITEMS } from "./_landing/data";
 import { Deck } from "./_landing/Deck";
 import { Footer } from "./_landing/Footer";
 import { HeroSearch } from "./_landing/HeroSearch";
-import { HeroStage } from "./_landing/HeroStage";
 import { MarketingNav } from "./_landing/MarketingNav";
 import { Planet } from "./_landing/Planet";
 import { ResultsBand } from "./_landing/ResultsBand";
@@ -148,7 +147,6 @@ export default function Landing() {
         </section>
         <Planet />
         <Deck />
-        <HeroStage />
 
         {/* 3. Proof numbers */}
         <StatsRow />

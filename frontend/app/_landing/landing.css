@@ -83,21 +83,8 @@ html:has(.lp-page) { scroll-behavior: smooth; }
   .lp-hero-submit { width: 100%; }
 }
 
-/* the salmon stage with the app card rising out of it (m02, m03) */
-.lp-stage {
-  height: 372px; overflow: hidden; padding: 56px 72px 0;
-  background: var(--salmon-500); border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-}
-.lp-appcard { height: 100%; padding: 28px 32px 0; background: #fff; border-radius: var(--radius-l) var(--radius-l) 0 0; text-align: left; }
-.lp-appcard-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.lp-appcard .chip, .lp-media-panel .chip { animation: none; }
+.lp-media-panel .chip { animation: none; }
 .lp-summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 20px 0 16px !important; }
-@media (max-width: 767px) {
-  .lp-stage { height: 300px; padding: 24px 16px 0; }
-  .lp-appcard { padding: 20px 16px 0; }
-  .lp-appcard-chips { display: none; }
-  .lp-appcard .lp-summary { margin-top: 0 !important; }
-}
 
 /* ── bands ── */
 .lp-band { padding: var(--pad-section) 0; }

@@ -7,7 +7,9 @@ import { useEffect, useRef } from "react";
 // with a camera and a clapperboard whose clapstick snaps shut. three is
 // loaded on demand after the page is up. Until it draws, or when WebGL is
 // missing, the CSS planet underneath shows instead. Reduced motion draws one
-// still frame; nothing animates while the scene is off screen.
+// still frame; nothing animates while the scene is off screen. Moving the
+// pointer makes the scene swim: it drifts after the pointer with a watery lag
+// and the orbiters speed up and wiggle, then settle.
 
 const PLANET_VERT = `
 varying vec3 vPos;
@@ -159,6 +161,10 @@ export function PlanetScene() {
       const spin = new THREE.Group();
       ring.add(spin);
       scene.add(ring);
+      // everything hangs in one group that drifts after the pointer, as if in water
+      const world = new THREE.Group();
+      world.add(axis, ring);
+      scene.add(world);
 
       // puffy 3D emojis: flat shapes extruded with a deep, round bevel, under a
       // clear coat, so they read like glossy toys
@@ -277,35 +283,64 @@ export function PlanetScene() {
         return m;
       };
 
-      // the camera: a chunky body with a big glass lens, a viewfinder bump and a red button
-      const camBody = rbox(SIZE, SIZE * 0.7, SIZE * 0.4, SIZE * 0.13);
-      const camTop = rbox(SIZE * 0.34, SIZE * 0.16, SIZE * 0.3, SIZE * 0.06);
-      const lensRing = new THREE.CylinderGeometry(SIZE * 0.25, SIZE * 0.27, SIZE * 0.14, 40);
-      const lensGlass = new THREE.SphereGeometry(SIZE * 0.19, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-      const camButton = new THREE.CylinderGeometry(SIZE * 0.06, SIZE * 0.06, SIZE * 0.06, 20);
-      disposables.push(lensRing, lensGlass, camButton);
-      const camShell = gloss(0xf3f5f9);
-      const camDark = plain(0x26324a, 0.4);
+      // the film camera: a slate body, two blue film reels on top that turn,
+      // a lens barrel with a flared hood, and a red record light
+      const S = SIZE * 1.1;
+      const camBody = rbox(S * 0.62, S * 0.4, S * 0.3, S * 0.08);
+      const barrel = new THREE.CylinderGeometry(S * 0.1, S * 0.1, S * 0.18, 28);
+      const hood = new THREE.CylinderGeometry(S * 0.1, S * 0.18, S * 0.16, 28, 1, true);
+      const glassGeo = new THREE.SphereGeometry(S * 0.1, 24, 16);
+      const reelGeo = new THREE.CylinderGeometry(S * 0.17, S * 0.17, S * 0.08, 40);
+      const hubGeo = new THREE.CylinderGeometry(S * 0.045, S * 0.045, S * 0.1, 20);
+      const holeGeo = new THREE.CylinderGeometry(S * 0.035, S * 0.035, S * 0.09, 16);
+      const lightGeo = new THREE.SphereGeometry(S * 0.04, 16, 12);
+      disposables.push(barrel, hood, glassGeo, reelGeo, hubGeo, holeGeo, lightGeo);
+      const camDark = plain(0x2b3446, 0.4);
+      camDark.side = THREE.DoubleSide;
+      const reelMat = gloss(0x3f8cf0);
+      const hubMat = gloss(0xf3f5f9);
       const camLens = new THREE.MeshPhysicalMaterial({
-        color: 0x3f8cf0, roughness: 0.05, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.02,
+        color: 0x9fd0ff, roughness: 0.05, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.02,
       });
-      const camRed = gloss(0xff4d5e);
+      const camRed = gloss(0xff3b4e);
       disposables.push(camLens);
+      const reels: InstanceType<typeof THREE.Group>[] = [];
+      const reel = (x: number, y: number, r: number) => {
+        const g = new THREE.Group();
+        const disc = new THREE.Mesh(reelGeo, reelMat);
+        disc.rotation.x = Math.PI / 2;
+        const hub = new THREE.Mesh(hubGeo, hubMat);
+        hub.rotation.x = Math.PI / 2;
+        g.add(disc, hub);
+        for (let k = 0; k < 3; k++) {
+          const hole = new THREE.Mesh(holeGeo, camDark);
+          const a = (k / 3) * Math.PI * 2;
+          hole.rotation.x = Math.PI / 2;
+          hole.position.set(Math.cos(a) * S * 0.1, Math.sin(a) * S * 0.1, 0);
+          g.add(hole);
+        }
+        g.position.set(x, y, 0);
+        g.scale.setScalar(r);
+        reels.push(g);
+        return g;
+      };
       const filmCamera = () => {
         const g = new THREE.Group();
-        g.add(new THREE.Mesh(camBody, camShell));
-        const top = new THREE.Mesh(camTop, camDark);
-        top.position.set(-SIZE * 0.1, SIZE * 0.38, 0);
-        const ring = new THREE.Mesh(lensRing, camDark);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.z = SIZE * 0.24;
-        const glass = new THREE.Mesh(lensGlass, camLens);
-        glass.rotation.x = Math.PI / 2;
-        glass.scale.set(1, 0.45, 1);
-        glass.position.z = SIZE * 0.3;
-        const button = new THREE.Mesh(camButton, camRed);
-        button.position.set(SIZE * 0.3, SIZE * 0.37, 0);
-        g.add(top, ring, glass, button);
+        const body = new THREE.Mesh(camBody, camDark);
+        body.position.set(-S * 0.06, -S * 0.12, 0);
+        const tube = new THREE.Mesh(barrel, camDark);
+        tube.rotation.z = Math.PI / 2;
+        tube.position.set(S * 0.32, -S * 0.12, 0);
+        const flare = new THREE.Mesh(hood, camDark);
+        flare.rotation.z = -Math.PI / 2;
+        flare.position.set(S * 0.47, -S * 0.12, 0);
+        const glass = new THREE.Mesh(glassGeo, camLens);
+        glass.scale.set(0.5, 1, 1);
+        glass.position.set(S * 0.42, -S * 0.12, 0);
+        const light = new THREE.Mesh(lightGeo, camRed);
+        light.position.set(-S * 0.26, -S * 0.02, S * 0.15);
+        g.add(body, tube, flare, glass, light, reel(-S * 0.2, S * 0.2, 1.1), reel(S * 0.13, S * 0.2, 0.95));
+        g.position.x = -S * 0.06;
         return g;
       };
 
@@ -401,10 +436,50 @@ export function PlanetScene() {
       let t = 6; // start a few seconds in, so the still frame has emojis on both sides
       let raf = 0;
       let visible = true;
+      // swimming: the scene drifts toward the pointer with a slow, watery lag,
+      // and moving the pointer stirs the water, so the orbiters speed up, bob
+      // and wiggle like fish, then calm down again
+      const aim = { x: 0, y: 0 };
+      const drift = { x: 0, y: 0, vx: 0, vy: 0 };
+      let stir = 0;
+      let lap = (t / LAP) * Math.PI * 2;
+      let prev: { x: number; y: number } | null = null;
+      const onPointer = (e: PointerEvent) => {
+        const x = (e.clientX / window.innerWidth) * 2 - 1;
+        const y = (e.clientY / window.innerHeight) * 2 - 1;
+        if (prev) stir = Math.min(1.5, stir + Math.hypot(x - prev.x, y - prev.y) * 1.6);
+        prev = { x, y };
+        aim.x = x;
+        aim.y = y;
+      };
+      window.addEventListener("pointermove", onPointer, { passive: true });
+
+      const step = (dt: number) => {
+        // a soft, underdamped spring: it lags behind, then sways past and settles
+        const k = 6;
+        const c = 2.2;
+        drift.vx += (k * (aim.x - drift.x) - c * drift.vx) * dt;
+        drift.vy += (k * (aim.y - drift.y) - c * drift.vy) * dt;
+        drift.x += drift.vx * dt;
+        drift.y += drift.vy * dt;
+        stir *= Math.exp(-dt * 1.1);
+        lap += dt * ((Math.PI * 2) / LAP) * (1 + stir * 2.5);
+      };
+
       const draw = () => {
         planet.rotation.y = (t / TURN) * Math.PI * 2;
-        spin.rotation.y = (t / LAP) * Math.PI * 2;
-        for (const f of flippers) f.obj.rotation.y = Math.sin(t * f.rate + f.phase) * 0.6;
+        spin.rotation.y = lap;
+        world.rotation.y = drift.x * 0.32;
+        world.rotation.x = drift.y * 0.2;
+        world.position.x = drift.x * 0.1;
+        world.position.y = -drift.y * 0.08 + Math.sin(t * 0.7) * 0.03;
+        flippers.forEach((f, i) => {
+          f.obj.rotation.y = Math.sin(t * f.rate + f.phase) * 0.6;
+          // a tail wiggle that grows with the stir
+          f.obj.rotation.z = Math.sin(t * 7 + i) * 0.28 * stir;
+          f.obj.position.y = Math.sin(t * 1.1 + f.phase) * (0.025 + 0.05 * stir);
+        });
+        for (const r of reels) r.rotation.z = -t * (1.6 + stir * 4);
         // the clapstick snaps shut, then eases open again
         for (const c of clapsticks) {
           const u = Math.min(1, ((t + c.phase) % 3.2) / 0.6);
@@ -413,8 +488,10 @@ export function PlanetScene() {
         renderer.render(scene, camera);
       };
       const loop = (now: number) => {
-        t += Math.min((now - last) / 1000, 0.1);
+        const dt = Math.min((now - last) / 1000, 0.1);
+        t += dt;
         last = now;
+        step(dt);
         draw();
         raf = visible && !reduce.matches ? requestAnimationFrame(loop) : 0;
       };
@@ -447,6 +524,7 @@ export function PlanetScene() {
         ro.disconnect();
         io.disconnect();
         reduce.removeEventListener("change", kick);
+        window.removeEventListener("pointermove", onPointer);
         host.removeAttribute("data-ready");
         disposables.forEach((d) => d.dispose());
         planet.geometry.dispose();
