@@ -5,6 +5,7 @@ import { appHref } from "./lib/query";
 import { Accordion, type AccordionItem } from "./_landing/Accordion";
 import { ComparisonTable } from "./_landing/ComparisonTable";
 import { DATA_NOTES_URL, EXAMPLE_ITEMS } from "./_landing/data";
+import { Deck } from "./_landing/Deck";
 import { Footer } from "./_landing/Footer";
 import { HeroSearch } from "./_landing/HeroSearch";
 import { HeroStage } from "./_landing/HeroStage";
@@ -151,6 +152,7 @@ export default function Landing() {
           </div>
         </section>
         <Planet />
+        <Deck />
         <HeroStage />
 
         {/* 3. Proof numbers */}

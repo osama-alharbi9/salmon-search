@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { FISH_BODY } from "../ui/Logo";
+import { PIXELS, type PixelArt } from "./pixels";
 
 // The landing planet in three.js: a sphere that turns on a tilted axis with a
 // painterly surface from 3D noise (so it has no seams), and a tilted ring of
@@ -82,58 +83,7 @@ void main() {
 
 /** What sits in each of the 8 places on the ring, in orbit order. */
 const ORBITERS = ["coin", "star", "heart", "coin", "bolt", "star", "coin", "heart"] as const;
-type Kind = (typeof ORBITERS)[number];
 
-/** Pixel art for the voxel symbols, one string per row, # is a filled cell. */
-const PIXELS: Record<Exclude<Kind, "coin">, { rows: string[]; color: number; glow: number; size: number }> = {
-  star: {
-    rows: [
-      ".....#.....",
-      "....###....",
-      "....###....",
-      "###########",
-      ".#########.",
-      "..#######..",
-      "...#####...",
-      "..###.###..",
-      "..##...##..",
-      ".#.......#.",
-    ],
-    color: 0xffb400,
-    glow: 0x7a3a00,
-    size: 0.6,
-  },
-  heart: {
-    rows: [
-      ".##...##.",
-      "####.####",
-      "#########",
-      "#########",
-      ".#######.",
-      "..#####..",
-      "...###...",
-      "....#....",
-    ],
-    color: 0xff3a64,
-    glow: 0x5a0a1c,
-    size: 0.5,
-  },
-  bolt: {
-    rows: [
-      "....###",
-      "...###.",
-      "..###..",
-      ".######",
-      "....##.",
-      "...##..",
-      "..##...",
-      ".##....",
-    ],
-    color: 0x8a5cff,
-    glow: 0x2a1670,
-    size: 0.46,
-  },
-};
 const ORBIT = 1.7; // orbit radius, planet radius is 1
 const COIN_R = 0.27;
 const COIN_T = 0.06;
@@ -257,8 +207,8 @@ export function PlanetScene() {
       scene.add(ring);
       // voxel symbols: one merged geometry of cubes per pixel-art shape, centred
       const disposables: { dispose: () => void }[] = [];
-      const voxels = {} as Record<Exclude<Kind, "coin">, InstanceType<typeof THREE.Mesh>>;
-      for (const [kind, art] of Object.entries(PIXELS) as [Exclude<Kind, "coin">, (typeof PIXELS)["star"]][]) {
+      const voxels = {} as Record<keyof typeof PIXELS, InstanceType<typeof THREE.Mesh>>;
+      for (const [kind, art] of Object.entries(PIXELS) as [keyof typeof PIXELS, PixelArt][]) {
         const cols = art.rows[0].length;
         const cell = art.size / cols;
         const cubes: InstanceType<typeof THREE.BoxGeometry>[] = [];
