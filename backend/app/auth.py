@@ -183,9 +183,14 @@ def me(user: User | None = Depends(optional_user)):
 
 
 # ── Google OAuth ─────────────────────────────────────────────────────────────
+def google_enabled() -> bool:
+    """True when Google OAuth credentials are set, so the login route works."""
+    return "google" in oauth._clients
+
+
 @router.get("/google/login")
 async def google_login(request: Request):
-    if "google" not in oauth._clients:
+    if not google_enabled():
         raise HTTPException(503, "Google sign-in is not configured on the server.")
     redirect_uri = str(request.url_for("google_callback"))
     # Behind Railway's TLS-terminating proxy the app sees http, so url_for builds
@@ -198,7 +203,7 @@ async def google_login(request: Request):
 
 @router.get("/google/callback", name="google_callback")
 async def google_callback(request: Request, db: Session = Depends(get_db)):
-    if "google" not in oauth._clients:
+    if not google_enabled():
         raise HTTPException(503, "Google sign-in is not configured on the server.")
     try:
         token = await oauth.google.authorize_access_token(request)

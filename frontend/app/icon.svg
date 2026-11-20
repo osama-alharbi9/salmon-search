@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <radialGradient id="wl1" cx="0.22" cy="0.25" r="0.55"><stop offset="0" stop-color="#9ccaff"/><stop offset="1" stop-color="#9ccaff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wl2" cx="0.8" cy="0.82" r="0.5"><stop offset="0" stop-color="#9ccaff"/><stop offset="1" stop-color="#9ccaff" stop-opacity="0"/></radialGradient>
+    <clipPath id="sq"><rect width="256" height="256" rx="58"/></clipPath>
+  </defs>
+  <g clip-path="url(#sq)">
+    <rect width="256" height="256" fill="#3d7bf2"/>
+    <rect width="256" height="256" fill="url(#wl1)"/>
+    <rect width="256" height="256" fill="url(#wl2)"/>
+    <g transform="translate(14 46) scale(0.95)">
+  <defs>
+    <radialGradient id="body" cx="0.36" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#ffc2ad"/>
+      <stop offset="0.35" stop-color="#ff8f73"/>
+      <stop offset="0.75" stop-color="#f2634f"/>
+      <stop offset="1" stop-color="#c9423a"/>
+    </radialGradient>
+    <linearGradient id="belly" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe3d8" stop-opacity="0"/>
+      <stop offset="0.55" stop-color="#ffd6c8" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#f4a892" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="fin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9a80"/>
+      <stop offset="1" stop-color="#d4493f"/>
+    </linearGradient>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e65a49"/>
+      <stop offset="1" stop-color="#ff9a80"/>
+    </linearGradient>
+    <radialGradient id="gloss" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="shade" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#0b2a6b" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#0b2a6b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="under" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.55" stop-color="#7a1f2a" stop-opacity="0"/>
+      <stop offset="1" stop-color="#7a1f2a" stop-opacity="0.35"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#3a3f55"/>
+      <stop offset="1" stop-color="#0d0f1a"/>
+    </radialGradient>
+  </defs>
+  <!-- water shadow -->
+  <ellipse cx="120" cy="142" rx="100" ry="16" fill="url(#shade)"/>
+  <ellipse cx="112" cy="140" rx="86" ry="6" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+  <!-- tail -->
+  <path d="M168 86 C182 72 196 52 214 40 C226 36 230 46 226 58 C220 74 210 84 202 92 C210 100 220 110 226 126 C230 138 226 148 214 144 C196 132 182 112 168 98 Z" fill="url(#tail)"/>
+  <path d="M190 70 C200 62 208 54 216 50" stroke="#ffb59f" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <!-- dorsal fin -->
+  <path d="M92 50 C100 28 124 18 146 26 C156 30 160 40 156 48 C136 50 112 52 92 54 Z" fill="url(#fin)"/>
+  <!-- body -->
+  <path d="M26 92 C26 60 62 42 108 42 C146 42 176 62 184 92 C176 122 146 140 108 140 C62 140 26 124 26 92 Z" fill="url(#body)"/>
+  <!-- belly -->
+  <path d="M34 104 C52 126 84 136 110 136 C142 136 166 124 178 106 C150 116 120 118 92 116 C70 114 50 110 34 104 Z" fill="url(#belly)"/>
+  <path d="M26 92 C26 60 62 42 108 42 C146 42 176 62 184 92 C176 122 146 140 108 140 C62 140 26 124 26 92 Z" fill="url(#under)"/>
+  <!-- back spots -->
+  <g fill="#b23b33" opacity="0.45">
+    <circle cx="118" cy="56" r="3"/><circle cx="134" cy="62" r="2.4"/><circle cx="150" cy="66" r="2.8"/>
+    <circle cx="126" cy="72" r="2"/><circle cx="160" cy="78" r="2.2"/><circle cx="104" cy="62" r="2.2"/>
+  </g>
+  <!-- gill -->
+  <path d="M74 66 C66 80 66 102 74 116" stroke="#c9423a" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.55"/>
+  <!-- pectoral fin -->
+  <path d="M90 104 C100 100 116 104 122 116 C114 124 98 122 90 112 Z" fill="url(#fin)" opacity="0.95"/>
+  <!-- gloss -->
+  <ellipse cx="88" cy="58" rx="38" ry="11" fill="url(#gloss)" transform="rotate(-10 88 58)"/>
+  <ellipse cx="146" cy="58" rx="12" ry="5" fill="url(#gloss)" opacity="0.7" transform="rotate(14 146 58)"/>
+  <!-- eye -->
+  <circle cx="54" cy="80" r="11" fill="#ffffff"/>
+  <circle cx="52" cy="81" r="7" fill="url(#eye)"/>
+  <circle cx="49.5" cy="78" r="2.4" fill="#ffffff"/>
+  <!-- mouth -->
+  <path d="M32 98 C37 103 44 103 48 99" stroke="#a8352f" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <!-- cheek -->
+  <ellipse cx="62" cy="100" rx="7" ry="4" fill="#ff6f6f" opacity="0.35"/>
+</g>
+  </g></svg>

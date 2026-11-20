@@ -26,6 +26,7 @@ from app import llm                # noqa: E402
 from app import vds                # noqa: E402
 from app import auth               # noqa: E402
 from app import saved              # noqa: E402
+from app import tmdb               # noqa: E402
 from app.db import init_db         # noqa: E402
 
 app = FastAPI(title="salmon API", version="1.0")
@@ -123,6 +124,16 @@ def health():
     return {"ok": True, "model": llm.MODEL}
 
 
+@app.get("/api/config")
+def config():
+    """Optional features this server has set up, so the UI can hide the ones that
+    would fail: Google sign-in needs OAuth credentials, the vibe field needs an
+    Anthropic key. Trope search needs neither."""
+    return {"google": auth.google_enabled(),
+            "vibe": bool(os.environ.get("ANTHROPIC_API_KEY")),
+            "tmdb": tmdb.enabled()}
+
+
 @app.post("/api/ask")
 def ask(body: AskBody):
     text = body.q.strip()
@@ -142,6 +153,21 @@ def ask(body: AskBody):
 @app.post("/api/work")
 def work(body: WorkBody):
     return engine.work_tropes(body.namespace, body.title)
+
+
+class MediaBody(BaseModel):
+    ids: list[str]
+
+
+@app.post("/api/media")
+def media(body: MediaBody):
+    """Posters and backdrops from TMDB for up to 50 work ids. Unknown ids and
+    works TMDB cannot match come back as null."""
+    works = []
+    for wid in dict.fromkeys(body.ids[:50]):
+        tn = engine.work_title(wid)
+        works.append((wid, *tn) if tn else (wid, "", ""))
+    return {"media": tmdb.media(works)}
 
 
 @app.post("/api/work_by_id")

@@ -37,6 +37,7 @@ Trope search needs no keys and no database server. These go in `backend/.env`:
 | `DATABASE_URL` | Postgres for accounts and saved searches. When empty, they use a SQLite file at `backend/data/salmon.db`. |
 | `SALMON_SESSION_SECRET` | A fixed key for login cookies. When empty, logins reset each time the server restarts. |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in. |
+| `TMDB_API_KEY` | Posters and release years from TMDB for films, TV and animation, in results and on work pages. Lookups are cached in `backend/data/tmdb_cache.sqlite`. |
 
 ## Example queries
 
@@ -94,7 +95,7 @@ backend/
   tests/             Offline tests on an invented fixture dataset
   data/              Dump, built artifacts, SQLite file (not committed)
 frontend/            Next.js web UI
-docs/DESIGN.md       The Cupertino '84 design system used by the UI
+docs/DESIGN.md       The UI design system: salmon and warm grey colours, Archivo and Inter type, pill controls, page layouts
 Makefile             install, data, run, test, lint
 ```
 
@@ -123,6 +124,8 @@ The content comes from [TVTropes](https://tvtropes.org) and its contributors, un
 
 The dataset's Hugging Face card lists Apache 2.0. That label comes from whoever published the dump and does not change the license of the underlying TVTropes text, so treat the data as CC BY-NC-SA.
 
+Posters come from [TMDB](https://www.themoviedb.org) when `TMDB_API_KEY` is set. This product uses the TMDB API but is not endorsed or certified by TMDB.
+
 The embedding model, [intfloat/multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small), is MIT licensed and is downloaded on first use.
 
 ## Roadmap
@@ -131,4 +134,3 @@ The embedding model, [intfloat/multilingual-e5-small](https://huggingface.co/int
 - Near matches in the web UI, as the search CLI already does
 - A filter for parsing noise, such as episode names listed as tropes
 - Database migrations with Alembic
-- A smooth-type option for readers who find bitmap fonts hard to read

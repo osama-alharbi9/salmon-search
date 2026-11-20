@@ -123,6 +123,12 @@ def work_tropes(namespace: str, title: str) -> dict:
     }
 
 
+def work_title(work_id: str) -> tuple[str, str] | None:
+    """(title, namespace) for a 'Namespace/Slug' id, or None if unknown."""
+    rec = _WORKS.get(work_id)
+    return (rec["title"], rec["namespace"]) if rec else None
+
+
 def work_by_id(work_id: str) -> dict:
     """Same as work_tropes but keyed by the exact 'Namespace/Slug' id (for the
     work-detail page, where we already know the canonical id)."""

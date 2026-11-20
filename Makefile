@@ -51,6 +51,7 @@ run:
 
 test:
 	cd backend && $(BIN)/python -m pytest
+	cd frontend && npm test
 
 lint:
 	cd backend && $(BIN)/ruff check .

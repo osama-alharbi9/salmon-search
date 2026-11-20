@@ -25,6 +25,26 @@ def test_health(client):
     assert client.get("/api/health").json()["ok"] is True
 
 
+def test_config_reports_optional_features(client, monkeypatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    body = client.get("/api/config").json()
+    assert body["vibe"] is False
+    assert isinstance(body["google"], bool)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    assert client.get("/api/config").json()["vibe"] is True
+
+
+def test_media_route_answers_for_known_and_unknown_ids(client, monkeypatch, tmp_path):
+    from app import tmdb
+    monkeypatch.setenv("TMDB_API_KEY", "test-key")
+    monkeypatch.setenv("SALMON_TMDB_CACHE", str(tmp_path / "tmdb.sqlite"))
+    monkeypatch.setattr(tmdb, "_get", lambda path, **p: {"results": []})
+    r = client.post("/api/media", json={"ids": ["Series/NineTenths", "Film/NoSuchWork"]})
+    assert r.status_code == 200
+    assert r.json() == {"media": {"Series/NineTenths": None, "Film/NoSuchWork": None}}
+    assert client.get("/api/config").json()["tmdb"] is True
+
+
 def test_search_needs_no_keys_and_no_login(client, fake_model):
     r = client.post("/api/vds_search", json={"items": ["found family", "the caper"]})
     assert r.status_code == 200
