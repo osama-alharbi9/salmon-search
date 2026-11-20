@@ -314,66 +314,32 @@ html:has(.lp-page) { scroll-behavior: smooth; }
   .lp-404-sub { margin-top: 24px !important; }
 }
 
-/* ── planet under the hero card ── */
-.lp-planet-wrap {
-  --d: clamp(200px, 32vw, 360px);  /* planet diameter */
-  --c: calc(var(--d) * 0.24);      /* coin diameter */
-  --r: calc(var(--d) * 0.8);       /* orbit radius */
-  display: grid; place-items: center; overflow: hidden;
-  padding: 112px 0 96px;
+/* ── planet above the hero card (three.js, PlanetScene) ── */
+.lp-planet-wrap { padding: 32px 0 48px; overflow: hidden; }
+.lp-planet-stage {
+  position: relative; width: min(100%, 1120px); margin: 0 auto;
+  aspect-ratio: 3 / 2; max-height: 720px;
 }
-.lp-planet-scene {
-  position: relative; width: var(--d); height: var(--d);
-  perspective: 1600px; transform-style: preserve-3d;
+.lp-planet-3d { position: absolute; inset: 0; }
+.lp-planet-3d canvas { display: block; width: 100%; height: 100%; }
+/* placeholder and no-WebGL fallback: a shaded disc with a scrolling map */
+.lp-planet-fallback {
+  position: absolute; left: 50%; top: 50%; height: 76%; aspect-ratio: 1; translate: -50% -50%;
+  border-radius: 50%; overflow: hidden;
 }
-.lp-planet {
-  position: absolute; inset: 0; overflow: hidden; border-radius: 50%;
-  transform: translateZ(0);
-  box-shadow: 0 48px 72px -36px rgba(5, 43, 40, 0.45);
+.lp-planet-fallback::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: inset -18px -24px 48px rgba(5, 43, 40, 0.55), inset 10px 12px 28px rgba(255, 255, 255, 0.3);
 }
 .lp-planet-map {
-  position: absolute; top: 0; left: 0; width: 400%; height: 100%;
-  background: url(/planet.svg) repeat-x 0 0 / 50% 100%;
+  position: absolute; inset: 0;
+  background: url(/planet.svg) repeat-x 0 0 / 200% 100%;
   animation: lp-turn 40s linear infinite;
 }
-/* light from the top left, night side and limb at the bottom right */
-.lp-planet::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 38%),
-    radial-gradient(circle at 42% 40%, rgba(5, 43, 40, 0) 48%, rgba(5, 43, 40, 0.28) 72%, rgba(5, 43, 40, 0.72) 100%);
-  box-shadow: inset -10px -14px 32px rgba(5, 43, 40, 0.35), inset 6px 8px 18px rgba(255, 255, 255, 0.25);
+.lp-planet-stage:has(.lp-planet-3d[data-ready]) .lp-planet-fallback { display: none; }
+@keyframes lp-turn { to { background-position: -200% 0; } }
+@media (max-width: 767px) {
+  .lp-planet-wrap { padding: 16px 0 32px; }
+  .lp-planet-stage { aspect-ratio: 5 / 4; }
 }
-.lp-orbit {
-  position: absolute; inset: 0; transform-style: preserve-3d;
-  transform: rotateZ(-28deg) rotateX(-12deg);
-}
-.lp-orbit-spin {
-  position: absolute; inset: 0; transform-style: preserve-3d;
-  animation: lp-orbit 22s linear infinite;
-}
-.lp-coin-slot {
-  position: absolute; left: 50%; top: 50%;
-  width: var(--c); height: var(--c); margin: calc(var(--c) / -2) 0 0 calc(var(--c) / -2);
-  transform-style: preserve-3d;
-  /* evenly round the ring, each coin's face turned along the orbit */
-  transform: rotateY(calc(var(--i) * 45deg)) translateZ(var(--r)) rotateY(72deg);
-}
-.lp-coin { position: absolute; inset: 0; transform-style: preserve-3d; }
-.lp-coin-rim, .lp-coin-face {
-  position: absolute; inset: 0; border-radius: 50%;
-  transform: translateZ(var(--z));
-}
-.lp-coin-rim { background: #C9563A; }
-.lp-coin-face {
-  display: grid; place-items: center;
-  background: radial-gradient(circle at 34% 28%, #FFD2BE 0%, #FF9A7C 38%, #F27654 72%, #D9603F 100%);
-  box-shadow: inset 0 0 0 calc(var(--c) * 0.07) #EE7E5E, inset 0 0 0 calc(var(--c) * 0.085) #C9563A;
-}
-.lp-coin-face svg { width: 52%; fill: #C9563A; opacity: 0.85; filter: drop-shadow(1px 1px 0 rgba(255, 220, 205, 0.7)); }
-@keyframes lp-turn { to { transform: translateX(-50%); } }
-@keyframes lp-orbit { to { transform: rotateY(360deg); } }
-@media (max-width: 767px) { .lp-planet-wrap { padding: 72px 0 64px; } }
-@media (prefers-reduced-motion: reduce) {
-  .lp-planet-map, .lp-orbit-spin { animation: none; }
-}
+@media (prefers-reduced-motion: reduce) { .lp-planet-map { animation: none; } }

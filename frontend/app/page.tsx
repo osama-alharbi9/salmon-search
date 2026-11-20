@@ -156,8 +156,8 @@ export default function Landing() {
             </p>
           </div>
         </section>
-        <HeroStage />
         <Planet />
+        <HeroStage />
 
         {/* 3. Proof numbers */}
         <StatsRow />
