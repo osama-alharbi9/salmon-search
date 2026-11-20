@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
 // of the screen's size) spreads the ripples, and each frame tints their slopes
 // sky blue. The canvas is multiplied over the page, so calm water is white and
 // changes nothing, the text stays readable, and clicks pass straight through.
-// three is loaded on demand. The loop stops a few seconds after the pointer
-// does. Under reduced motion, or without WebGL, nothing is drawn.
+// A faint caustic net moves under it all the time. Every tint stays under 10%.
+// three is loaded on demand. Under reduced motion, or without WebGL, nothing is drawn.
 
 const VERT = `
 varying vec2 vUv;
@@ -45,11 +45,24 @@ void main() {
 }`;
 
 // light the ripples from the top left: slopes facing away from it take the
-// pool blue, and every crest gets a faint rim
+// pool blue. Under them, a slow caustic net (light through moving water) is
+// always there, faintly. Nothing ever goes past a 10% tint.
 const VIEW = `
 uniform sampler2D tState;
 uniform vec2 texel;
+uniform float time;
+uniform float aspect;
 varying vec2 vUv;
+// a warped grid whose zero lines read as the bright net on a pool floor
+float caustic(vec2 p, float t) {
+  vec2 q = p;
+  for (int n = 0; n < 3; n++) {
+    float f = float(n);
+    q += vec2(sin(q.y * 1.3 + t * 1.1 + f), cos(q.x * 1.1 - t * 0.9 + f * 1.7)) * 0.6;
+  }
+  float w = sin(q.x * 1.5) * sin(q.y * 1.5);
+  return pow(1.0 - abs(w), 14.0);
+}
 void main() {
   vec2 o = texel;
   float l = texture2D(tState, vUv - vec2(o.x, 0.0)).r;
@@ -58,13 +71,14 @@ void main() {
   float u = texture2D(tState, vUv + vec2(0.0, o.y)).r;
   vec2 g = vec2(r - l, u - d);
   float shade = max(dot(g, normalize(vec2(1.0, -1.0))), 0.0);
-  float rim = length(g);
-  float k = clamp(shade * 2.0 + rim * 0.6, 0.0, 0.08);
+  float ripple = shade * 2.0 + length(g) * 0.6;
+  vec2 p = vUv * vec2(aspect, 1.0) * 6.0 + g * 40.0; // ripples bend the net
+  float net = caustic(p, time * 0.25);
+  float k = clamp(net * 0.10 + ripple, 0.0, 0.10);
   vec3 pool = vec3(0.302, 0.592, 0.949);
   gl_FragColor = vec4(mix(vec3(1.0), pool, k), 1.0);
 }`;
 
-const IDLE_MS = 5000; // keep simulating this long after the last movement
 const SCALE = 4; // simulation cells per screen pixel, inverted
 
 export function Water() {
@@ -121,7 +135,12 @@ export function Water() {
       const view = new THREE.ShaderMaterial({
         vertexShader: VERT,
         fragmentShader: VIEW,
-        uniforms: { tState: { value: null }, texel: { value: new THREE.Vector2() } },
+        uniforms: {
+          tState: { value: null },
+          texel: { value: new THREE.Vector2() },
+          time: { value: 0 },
+          aspect: { value: 1 },
+        },
       });
 
       const wipe = () => {
@@ -143,6 +162,7 @@ export function Water() {
         sim.uniforms.texel.value.set(1 / sw, 1 / sh);
         view.uniforms.texel.value.set(1 / sw, 1 / sh);
         sim.uniforms.aspect.value = w / h;
+        view.uniforms.aspect.value = w / h;
         renderer.setClearColor(0x000000, 1);
         wipe();
         renderer.setClearColor(0xffffff, 1);
@@ -152,7 +172,6 @@ export function Water() {
       // the pointer's path since the last frame, pressed into the water once
       let last: { x: number; y: number } | null = null;
       let pending: { fx: number; fy: number; tx: number; ty: number; s: number } | null = null;
-      let lastInput = 0;
       let raf = 0;
 
       const step = () => {
@@ -177,9 +196,15 @@ export function Water() {
         renderer.render(scene, cam);
       };
 
+      // 30 fps is plenty for slow water; the browser pauses it in hidden tabs
+      let odd = false;
       const loop = (now: number) => {
-        step();
-        raf = now - lastInput < IDLE_MS ? requestAnimationFrame(loop) : 0;
+        odd = !odd;
+        if (odd) {
+          view.uniforms.time.value = now / 1000;
+          step();
+        }
+        raf = requestAnimationFrame(loop);
       };
 
       const onPointer = (e: PointerEvent) => {
@@ -187,7 +212,7 @@ export function Water() {
         const y = 1 - e.clientY / window.innerHeight;
         if (last) {
           const dist = Math.hypot(x - last.x, y - last.y);
-          const s = Math.min(0.05, 0.012 + dist * 0.8);
+          const s = Math.min(0.012, 0.003 + dist * 0.2);
           if (pending) {
             pending.tx = x;
             pending.ty = y;
@@ -197,14 +222,13 @@ export function Water() {
           }
         }
         last = { x, y };
-        lastInput = performance.now();
-        if (!raf) raf = requestAnimationFrame(loop);
       };
       const onLeave = () => {
         last = null;
       };
 
       fit();
+      raf = requestAnimationFrame(loop);
       host.setAttribute("data-ready", "");
       window.addEventListener("pointermove", onPointer, { passive: true });
       document.documentElement.addEventListener("pointerleave", onLeave);
