@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-// A water surface behind the whole landing page. Moving the pointer drags a
+// A water surface behind the first screen of the landing page (header, hero, planet). Moving the pointer drags a
 // finger through it: a wave simulation (a height field on the GPU, at a quarter
 // of the screen's size) spreads the ripples, and each frame tints their slopes
-// sky blue. The canvas is the page's background: it sits under every band,
-// card and field, and clicks pass straight through.
-// A faint caustic net moves under it all the time. Every tint stays under 9%.
+// sky blue. It sits under the header, hero and planet, fades out at its
+// bottom edge, and clicks pass straight through. It pauses once scrolled away.
+// A faint caustic net moves under it all the time. Every tint stays under 5%.
 // three is loaded on demand. Under reduced motion, or without WebGL, nothing is drawn.
 
 const VERT = `
@@ -74,7 +74,7 @@ void main() {
   float ripple = shade * 2.0 + length(g) * 0.6;
   vec2 p = vUv * vec2(aspect, 1.0) * 6.0 + g * 40.0; // ripples bend the net
   float net = caustic(p, time * 0.25);
-  float k = clamp(net * 0.09 + ripple, 0.0, 0.09);
+  float k = clamp(net * 0.05 + ripple, 0.0, 0.05);
   vec3 pool = vec3(0.302, 0.592, 0.949);
   gl_FragColor = vec4(mix(vec3(1.0), pool, k), 1.0);
 }`;
@@ -151,9 +151,15 @@ export function Water() {
         renderer.setRenderTarget(null);
       };
 
+      // the water covers the first screen only: from the top of the page to the
+      // bottom of the planet (or the hero, if the planet is missing)
+      const page = host.parentElement ?? document.body;
+      const end = document.querySelector(".lp-planet-wrap") ?? document.querySelector(".lp-hero");
       const fit = () => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        const bottom = end ? end.getBoundingClientRect().bottom : window.innerHeight;
+        host.style.height = `${Math.max(1, Math.round(bottom - page.getBoundingClientRect().top))}px`;
+        const w = Math.max(1, host.clientWidth);
+        const h = Math.max(1, host.clientHeight);
         renderer.setSize(Math.ceil(w / 1.5), Math.ceil(h / 1.5), false);
         const sw = Math.max(2, Math.ceil(w / SCALE));
         const sh = Math.max(2, Math.ceil(h / SCALE));
@@ -204,15 +210,21 @@ export function Water() {
           view.uniforms.time.value = now / 1000;
           step();
         }
-        raf = requestAnimationFrame(loop);
+        raf = visible ? requestAnimationFrame(loop) : 0;
       };
+      let visible = true;
 
       const onPointer = (e: PointerEvent) => {
-        const x = e.clientX / window.innerWidth;
-        const y = 1 - e.clientY / window.innerHeight;
+        const r = host.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = 1 - (e.clientY - r.top) / r.height;
+        if (y < 0 || y > 1) {
+          last = null;
+          return;
+        }
         if (last) {
           const dist = Math.hypot(x - last.x, y - last.y);
-          const s = Math.min(0.018, 0.004 + dist * 0.3);
+          const s = Math.min(0.012, 0.003 + dist * 0.2);
           if (pending) {
             pending.tx = x;
             pending.ty = y;
@@ -233,9 +245,18 @@ export function Water() {
       window.addEventListener("pointermove", onPointer, { passive: true });
       document.documentElement.addEventListener("pointerleave", onLeave);
       window.addEventListener("resize", fit);
+      const ro = new ResizeObserver(() => fit());
+      if (end) ro.observe(end);
+      const io = new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !raf) raf = requestAnimationFrame(loop);
+      });
+      io.observe(host);
 
       cleanup = () => {
         cancelAnimationFrame(raf);
+        ro.disconnect();
+        io.disconnect();
         window.removeEventListener("pointermove", onPointer);
         document.documentElement.removeEventListener("pointerleave", onLeave);
         window.removeEventListener("resize", fit);
