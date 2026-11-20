@@ -12,7 +12,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-center { text-align: center; }
 
 /* ── 1. marketing nav (5.8) ── */
-.lp-nav { position: relative; z-index: var(--z-menu); background: #fff; }
+.lp-nav { position: relative; z-index: var(--z-menu); background: transparent; }
 .lp-nav-inner { display: flex; align-items: center; gap: 32px; height: 80px; }
 .lp-nav-links { display: flex; align-items: center; gap: 32px; }
 .lp-nav-link {
@@ -88,7 +88,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 
 /* ── bands ── */
 .lp-band { padding: var(--pad-section) 0; }
-.lp-grey { background: var(--grey-100); }
+.lp-grey { background: rgba(241, 244, 248, .72); }
 .lp-band-follow { padding-top: 0; }
 
 /* ── 3. proof numbers (m12) ── */
@@ -261,7 +261,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── 11. closing band (m14 structure, m02) ── */
-.lp-closing { display: flex; align-items: center; min-height: 420px; padding: 64px 0; background: radial-gradient(120% 140% at 50% 0%, #B5D9FF 0%, #7DB8FA 55%, #5A9EF5 100%); }
+.lp-closing { display: flex; align-items: center; min-height: 420px; padding: 64px 0; background: radial-gradient(120% 140% at 50% 0%, rgba(181, 217, 255, .9) 0%, rgba(125, 184, 250, .9) 55%, rgba(90, 158, 245, .9) 100%); }
 .lp-closing > .mk-container { display: flex; flex-direction: column; align-items: center; }
 .lp-closing-h { color: var(--salmon-950); }
 .lp-closing-line { margin-top: 24px !important; color: var(--salmon-950); }
@@ -272,7 +272,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── 12. footer (m15, m16) ── */
-.lp-footer { padding: 96px 0 64px; background: var(--grey-100); }
+.lp-footer { padding: 96px 0 64px; background: rgba(241, 244, 248, .72); }
 .lp-foot-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; }
 .lp-foot-h { font: 600 16px/24px var(--font-text); }
 .lp-foot-list { display: grid; gap: 4px; margin-top: 16px !important; }
@@ -329,7 +329,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 /* ── the deck under the planet (Deck.tsx) ── */
 .lp-deck {
   --deck-back: #4D97F2;
-  background: linear-gradient(180deg, #FFFFFF 0%, var(--salmon-50) 18%, var(--salmon-100) 100%); color: var(--text);
+  background: linear-gradient(180deg, rgba(242, 248, 255, 0) 0%, rgba(242, 248, 255, .6) 18%, rgba(225, 238, 255, .75) 100%); color: var(--text);
 }
 .lp-deck-copy { padding-top: 104px; }
 .lp-deck-stage { padding: 0 0 64px; }
@@ -400,6 +400,9 @@ html:has(.lp-page) { scroll-behavior: smooth; }
   .lp-deck[data-live] .lp-deck-stage { padding: 16px 0 12px; }
 }
 
-/* the water surface over the page (Water.tsx): white where calm, multiplied, so it only ever tints */
-.lp-water { position: fixed; inset: 0; z-index: 65; pointer-events: none; mix-blend-mode: multiply; }
+/* the water surface behind the whole page (Water.tsx): it is the page's background,
+   so every band is see-through and every card, field and button sits on top of it */
+.lp-water { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.lp-page > header, .lp-page > main, .lp-page > footer { position: relative; z-index: 1; }
+.lp-page .on-deep { background: linear-gradient(180deg, rgba(242, 248, 255, .7) 0%, rgba(225, 238, 255, .8) 100%); }
 .lp-water canvas { display: block; width: 100%; height: 100%; }

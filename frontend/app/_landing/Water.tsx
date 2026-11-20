@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-// A water surface over the whole landing page. Moving the pointer drags a
+// A water surface behind the whole landing page. Moving the pointer drags a
 // finger through it: a wave simulation (a height field on the GPU, at a quarter
 // of the screen's size) spreads the ripples, and each frame tints their slopes
-// sky blue. The canvas is multiplied over the page, so calm water is white and
-// changes nothing, the text stays readable, and clicks pass straight through.
-// A faint caustic net moves under it all the time. Every tint stays under 14%.
+// sky blue. The canvas is the page's background: it sits under every band,
+// card and field, and clicks pass straight through.
+// A faint caustic net moves under it all the time. Every tint stays under 9%.
 // three is loaded on demand. Under reduced motion, or without WebGL, nothing is drawn.
 
 const VERT = `
@@ -74,7 +74,7 @@ void main() {
   float ripple = shade * 2.0 + length(g) * 0.6;
   vec2 p = vUv * vec2(aspect, 1.0) * 6.0 + g * 40.0; // ripples bend the net
   float net = caustic(p, time * 0.25);
-  float k = clamp(net * 0.14 + ripple, 0.0, 0.14);
+  float k = clamp(net * 0.09 + ripple, 0.0, 0.09);
   vec3 pool = vec3(0.302, 0.592, 0.949);
   gl_FragColor = vec4(mix(vec3(1.0), pool, k), 1.0);
 }`;
