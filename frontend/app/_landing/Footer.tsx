@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { CC_BY_NC_SA_URL, Logo, TVTROPES_URL } from "../ui";
+import { CC_BY_NC_SA_URL, Logo, TMDB_NOTICE, TMDB_URL, TVTROPES_URL } from "../ui";
 import { appHref } from "../lib/query";
 import { DATASET_URL, LICENSE_URL, MODEL_URL, README_URL, REPO_URL } from "./data";
 
@@ -40,6 +40,7 @@ const COLUMNS: { title: string; links: FootLink[] }[] = [
     title: "Data",
     links: [
       { label: "TVTropes", href: TVTROPES_URL, external: true },
+      { label: "TMDB", href: TMDB_URL, external: true },
       { label: "TvTroper-Cleaned on Hugging Face", href: DATASET_URL, external: true },
       { label: "multilingual-e5-small", href: MODEL_URL, external: true },
     ],
@@ -89,7 +90,8 @@ export function Footer() {
             Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA) license
           </ExtA>
           . Each work in salmon links back to its page on TVTropes. Use of the data must stay non-commercial, and anything
-          built from it must be shared under the same license.
+          built from it must be shared under the same license. Posters and ratings come from{" "}
+          <ExtA href={TMDB_URL}>TMDB</ExtA>. {TMDB_NOTICE}
         </p>
       </div>
     </footer>

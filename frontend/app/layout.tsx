@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Archivo, Inter } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import { Providers } from "./ui/Providers";
 import "./globals.css";
 
-// Display: Archivo 900 at 85 % width. The width axis needs the variable font,
-// so the weight is left to the variable range and CSS picks 900.
-const archivo = Archivo({
+// Display: Newsreader, a text serif with an optical-size axis, so titles get
+// the tighter display cut at large sizes. CSS picks 500 and 600.
+const newsreader = Newsreader({
   variable: "--font-display",
   subsets: ["latin"],
-  axes: ["wdth"],
+  axes: ["opsz"],
   display: "swap",
 });
 
@@ -33,7 +33,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${archivo.variable} ${inter.variable}`}>
+    <html lang="en" className={`${newsreader.variable} ${inter.variable}`}>
       <body>
         <a className="skip-link" href="#content">
           Skip to content

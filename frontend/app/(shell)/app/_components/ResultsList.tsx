@@ -1,29 +1,11 @@
 "use client";
 import type { MouseEvent } from "react";
 import type { VdsSearchResponse } from "@/app/lib/api";
-import {
-  CC_BY_NC_SA_URL,
-  ExternalLink,
-  ResultCard,
-  SaveWorkButton,
-  TMDB_NOTICE,
-  TMDB_URL,
-  TVTROPES_URL,
-} from "@/app/ui";
-import { countLabel, formatCount } from "@/app/lib/query";
+import { ResultCard, SaveWorkButton } from "@/app/ui";
 import { useMedia } from "@/app/lib/media";
 import { rememberOpenedFromResults } from "./memory";
-import { displayTotal, PAGE_SIZE } from "./ResultsHeader";
 
-/** "Showing the top 25 of 4,232. salmon returns 25 results per search." */
-export function footerLine(shown: number, total: number): string {
-  if (shown < total) {
-    return `Showing the top ${formatCount(shown)} of ${formatCount(total)}. salmon returns ${PAGE_SIZE} results per search.`;
-  }
-  return `Showing all ${countLabel(total, "work")}. salmon returns up to ${PAGE_SIZE} results per search.`;
-}
-
-/** The ranked list of result cards (DESIGN.md 5.6) and the list footer. */
+/** The ranked list of result cards (DESIGN.md 5.6). */
 export function ResultsList({
   res,
   href,
@@ -33,7 +15,6 @@ export function ResultsList({
 }) {
   // Remember that a work was opened from these results, so its page can go Back.
   const media = useMedia(res.results.map((r) => r.id));
-  const anyPoster = Object.values(media).some(Boolean);
   const click = (e: MouseEvent<HTMLOListElement>) => {
     const a = (e.target as HTMLElement).closest<HTMLAnchorElement>(
       "a[href^='/work/']",
@@ -72,18 +53,6 @@ export function ResultsList({
           />
         ))}
       </ol>
-      <p className="body-s muted mt-6">
-        {footerLine(res.results.length, displayTotal(res))} Trope data from{" "}
-        <ExternalLink href={TVTROPES_URL}>TVTropes</ExternalLink>,{" "}
-        <ExternalLink href={CC_BY_NC_SA_URL}>CC BY-NC-SA</ExternalLink>.
-        {anyPoster && (
-          <>
-            {" "}
-            Posters from <ExternalLink href={TMDB_URL}>TMDB</ExternalLink>.{" "}
-            {TMDB_NOTICE}
-          </>
-        )}
-      </p>
     </>
   );
 }

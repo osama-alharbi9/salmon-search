@@ -52,10 +52,10 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-hero-form {
   display: flex; align-items: center; gap: 8px; max-width: 640px; min-height: 64px; margin: 40px auto 0;
   padding: 8px 8px 8px 24px; border-radius: var(--radius-full); background: #fff;
-  box-shadow: inset 0 0 0 1px var(--border-input); transition: box-shadow var(--dur-fast);
+  box-shadow: var(--shadow-soft), inset 0 0 0 1px var(--border-input); transition: box-shadow var(--dur-fast);
 }
-.lp-hero-form:hover { box-shadow: inset 0 0 0 1px var(--grey-900); }
-.lp-hero-form:focus-within { box-shadow: inset 0 0 0 2px var(--deep); }
+.lp-hero-form:hover { box-shadow: var(--shadow-soft-hover), inset 0 0 0 1px var(--grey-700); }
+.lp-hero-form:focus-within { box-shadow: var(--shadow-soft-hover), inset 0 0 0 2px var(--salmon-700), var(--ring-focus-soft); }
 .lp-hero-field { display: contents; }
 .lp-hero-field > .icon { color: var(--text-secondary); }
 .lp-hero-input {
@@ -142,9 +142,9 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 
 /* ── 5. real results, the deep band (m10, m09) ── */
 .lp-deep-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; }
-.lp-deep-h { color: var(--salmon-500); }
-.lp-deep-intro { margin-top: 24px !important; color: var(--salmon-50); }
-.lp-deep-card { padding: 24px; background: #fff; color: var(--text); border-radius: var(--radius-l); }
+.lp-deep-h { color: var(--text-display); }
+.lp-deep-intro { margin-top: 24px !important; color: var(--text-secondary); }
+.lp-deep-card { padding: 24px; background: #fff; color: var(--text); border-radius: var(--radius-l); box-shadow: var(--shadow-float); }
 .lp-deep-card :focus-visible { outline-color: var(--focus-ring); }
 .lp-deep-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 16px; }
 .lp-deep-q { display: flex; align-items: center; gap: 8px; min-width: 0; font: 600 16px/24px var(--font-text); }
@@ -274,10 +274,10 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── 11. closing band (m14 structure, m02) ── */
-.lp-closing { display: flex; align-items: center; min-height: 420px; padding: 64px 0; background: var(--salmon-500); }
+.lp-closing { display: flex; align-items: center; min-height: 420px; padding: 64px 0; background: radial-gradient(120% 140% at 50% 0%, #B5D9FF 0%, #7DB8FA 55%, #5A9EF5 100%); }
 .lp-closing > .mk-container { display: flex; flex-direction: column; align-items: center; }
-.lp-closing-h { color: var(--grey-900); }
-.lp-closing-line { margin-top: 24px !important; color: var(--grey-900); }
+.lp-closing-h { color: var(--salmon-950); }
+.lp-closing-line { margin-top: 24px !important; color: var(--salmon-950); }
 .lp-closing-btn { margin-top: 40px; }
 @media (max-width: 767px) {
   .lp-closing { min-height: 320px; }
@@ -312,7 +312,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── planet above the hero card (three.js, PlanetScene) ── */
-.lp-planet-wrap { margin-top: -48px; padding: 0 0 48px; overflow: hidden; }
+.lp-planet-wrap { margin-top: 32px; padding: 0 0 48px; overflow: hidden; }
 .lp-planet-stage {
   position: relative; width: min(100%, 1120px); margin: 0 auto;
   aspect-ratio: 3 / 2; max-height: 720px;
@@ -336,21 +336,19 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-planet-stage:has(.lp-planet-3d[data-ready]) .lp-planet-fallback { display: none; }
 @keyframes lp-turn { to { background-position: -200% 0; } }
 @media (max-width: 767px) {
-  .lp-planet-wrap { margin-top: -16px; padding: 0 0 32px; }
+  .lp-planet-wrap { margin-top: 24px; padding: 0 0 32px; }
   .lp-planet-stage { aspect-ratio: 5 / 4; }
 }
 @media (prefers-reduced-motion: reduce) { .lp-planet-map { animation: none; } }
 
 /* ── the deck under the planet (Deck.tsx) ── */
 .lp-deck {
-  --deck-back: #00A99B;
-  background: var(--salmon-900); color: var(--salmon-50);
+  --deck-back: #4D97F2;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--salmon-50) 18%, var(--salmon-100) 100%); color: var(--text);
 }
 .lp-deck-copy { padding-top: 104px; }
 .lp-deck-stage { padding: 0 0 64px; }
-.lp-deck-h { text-align: center; color: var(--salmon-500); max-width: 900px; margin: 0 auto; }
-.lp-deck-credit { text-align: center; color: var(--salmon-200); padding: 0 var(--gutter); }
-.lp-deck-credit a { color: inherit; }
+.lp-deck-h { text-align: center; max-width: 900px; margin: 0 auto; }
 /* static: a face-up row (no JavaScript, reduced motion) */
 .lp-deck-table {
   --card-w: 224px;
@@ -375,7 +373,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-card-front-in { display: flex; flex-direction: column; gap: 3.2cqw; height: 100%; padding: 7cqw 7cqw 6cqw; }
 .lp-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 3cqw; }
 .lp-card-title {
-  font: 900 9cqw/0.95 var(--font-display); font-stretch: 85%; text-transform: uppercase; color: var(--grey-900);
+  font: 600 10cqw/1 var(--font-display); letter-spacing: -.02em; color: var(--text-display);
 }
 .lp-card-suit { flex: none; width: 9cqw; height: auto; shape-rendering: crispEdges; }
 .lp-card-poster {
@@ -388,7 +386,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-card-tropes li:last-child { border-bottom: 0; }
 .lp-card-foot {
   display: flex; align-items: center; justify-content: space-between; margin-top: auto; transform: rotate(180deg);
-  font: 900 5cqw/1 var(--font-display); font-stretch: 85%; text-transform: uppercase; color: var(--grey-900);
+  font: 600 5.6cqw/1 var(--font-display); color: var(--text-display);
 }
 .lp-card-foot .lp-card-suit { width: 6cqw; }
 @container (max-width: 200px) {

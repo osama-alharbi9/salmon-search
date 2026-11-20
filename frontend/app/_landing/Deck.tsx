@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { ExternalLink, TMDB_NOTICE, TMDB_URL } from "../ui";
 import { FISH_BODY } from "../ui/Logo";
 import { appHref } from "../lib/query";
 import { PIXEL_COIN, PIXELS, pixelPath } from "./pixels";
@@ -462,10 +461,6 @@ export function Deck() {
               </Link>
             ))}
           </div>
-          <p className="body-s lp-deck-credit">
-            Tropes from TVTropes. Images and rating from{" "}
-            <ExternalLink href={TMDB_URL}>TMDB</ExternalLink>. {TMDB_NOTICE}
-          </p>
         </div>
       </div>
     </section>

@@ -144,11 +144,6 @@ export default function Landing() {
               <span className="lp-ln">Vibe,</span> <span className="lp-ln">don&apos;t search.</span>
             </h1>
             <HeroSearch id="hero-q" />
-            <div className="lp-hero-actions">
-              <a className={buttonClass("tertiary", "l")} href="#examples">
-                See examples
-              </a>
-            </div>
           </div>
         </section>
         <Planet />

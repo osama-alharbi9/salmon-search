@@ -2,23 +2,24 @@
 
 | | |
 |---|---|
-| Version | 2.0, November 2026 |
-| Replaces | Cupertino '84 (1-bit, bitmap type, zero radius) |
+| Version | 3.0 "pool", November 2026 |
+| Replaces | 2.0 (teal accent, uppercase Archivo), which replaced Cupertino '84 |
 | Product | salmon, trope-based search for films, TV, anime, games and books |
-| Fonts | Archivo (display), Inter (text). Both Google Fonts, SIL Open Font License |
-| Accent | `--salmon` `#00D0C0` with deep ink `#052B28` |
+| Fonts | Newsreader (display serif), Inter (text). Both Google Fonts, SIL Open Font License |
+| Accent | Pool water blue `--salmon-500` `#6AAEFA`, lit as a gradient (`#84BEFF` to `#4A90F0`), with navy ink `#18263D` |
 | Preview | A static specimen page with every token and component (kept outside the repo) |
 
-The structure, spacing, type scale, component shapes and interaction patterns follow the web design language of Wise (wise.com), studied from public screenshots on Mobbin. Wise is a reference only. salmon uses none of Wise's logo, illustrations, photography, brand name, copy, Wise Sans font, or brand colours. Every colour, font, word and image here is salmon's own.
+The structure, spacing, type scale, component shapes and interaction patterns follow the web design language of Wise (wise.com), studied from public screenshots on Mobbin. Since 3.0 the surface style (colour, type, shadows, radius) follows the iOS app Pool (pool.day), also studied from its public screens on Mobbin: a white canvas, one soft sky blue lit as a gradient with a glow, slate navy serif titles, white pills on soft shadows, big rounded sheets. Both are references only. salmon uses none of Wise's or Pool's logos, mascots, 3D icons, illustrations, photography, brand names, copy or fonts. Every colour, font, word and image here is salmon's own.
 
 ---
 
 ## 0. The system in 60 seconds
 
-- **One accent, one deep.** A bright teal fill for primary buttons and highlights, always with deep teal-black text on it. The deep colour also carries links, selected states and one dark band per page.
-- **Big type for statements, calm type for reading.** Heavy uppercase Archivo for short headlines only. Inter for everything people read or click.
-- **Everything you press is a pill.** Buttons, chips, search fields, nav highlights, tabs' segmented control.
-- **Surfaces, not lines.** White and warm grey bands alternate instead of dividers. Cards have no shadows. Shadows only on things that float: menus, modals, toasts.
+- **White water, one blue.** A white page and one soft sky blue. The blue is lit: a top-to-bottom gradient with a blue glow under it, on primary buttons, the active tab and the closing band. Labels on it are navy ink, never white (white measures 2 to 3:1 there).
+- **Serif for titles, Inter for reading.** Newsreader at 500, sentence case, slate navy, for headlines and page titles. Inter for everything people read or click.
+- **Everything you press is a pill.** Buttons, chips, search fields, nav highlights, the segmented control.
+- **Float on soft shadows.** Secondary buttons, chips, fields and cards are white with a wide, faint slate shadow and a hairline, instead of grey fills or hard borders. Grey bands still separate sections.
+- **Big radii.** Cards 22, modals and sheets 32, marketing cards 40. Inputs 14.
 - **Lists are rows.** A disc on the left, a title over a grey line, the value on the right.
 - **Show the working.** Every chip shows the real trope a phrase matched. Every result says how many of your tropes it has, which ones, and which are missing.
 - **Plain words, real numbers.** No invented data, ratings or testimonials anywhere.
@@ -31,7 +32,7 @@ Each principle names the Wise pattern it comes from. Reference files are listed 
 
 1. **One accent, used for doing.** Wise puts its bright green on the primary button, the highlight column and the full-bleed hero, and nowhere else. salmon does the same with `--salmon`: the primary action on a screen, the "full match" highlight, and at most one full-bleed salmon band per page. Text on salmon is always `--salmon-950`. (m01, m02, m08, a01)
 2. **Statements are short and huge; reading is calm.** Display type is for 3 to 8 word claims and section titles. It never carries instructions, results or forms. Body text sits at 16 to 20 px with generous line height. (m01, m05, m06, m13)
-3. **Pills for actions, rounded rectangles for containers.** Anything clickable that is not a link in text is fully rounded. Inputs are 10 px, cards 16 to 32 px, modals 24 px. (a01, a09, a15, m06)
+3. **Pills for actions, rounded rectangles for containers.** Anything clickable that is not a link in text is fully rounded. Inputs are 14 px, cards 22 to 40 px, modals and sheets 32 px. (a01, a09, a15, m06)
 4. **Hierarchy from fills, not borders or shadows.** Grey `--grey-100` bands and cards separate content. A 1 px hairline appears only where structure needs it (a list group label, a table, the footer). (m05, m11, m12, a02, a04)
 5. **Lists are rows with a fixed rhythm.** Disc 48 px, title 16/600, secondary line 14/400 grey, value or action on the right, 72 px row pitch, no dividers. (a04, a07, a22)
 6. **Show the working.** Wise shows the fee before you commit. salmon shows which trope each phrase matched, how many works use it, and for every result the tropes it has and the ones it is missing. Nothing is hidden behind a toggle that a person needs to trust a ranking. (m08, a20)
@@ -48,24 +49,25 @@ One salmon hue ramp, warm greys, and four status colours. Hex values are the sou
 
 | Token | Hex | Role |
 |---|---|---|
-| `--salmon-50` | `#EBFBF9` | Body text on the deep band, toast text |
-| `--salmon-100` | `#CCF5F1` | Secondary button fill, resolved and matched chips, focus ring on dark |
-| `--salmon-200` | `#A3EDE6` | Secondary button hover |
-| `--salmon-500` | `#00D0C0` | **The accent.** Primary fill, highlight, full-match rank disc, salmon band |
-| `--salmon-600` | `#00BDAE` | Primary hover |
-| `--salmon-700` | `#00A99B` | Primary pressed |
-| `--salmon-900` | `#0A3D39` | Raised surfaces and icon discs on the deep band, inverse button hover |
-| `--salmon-950` | `#052B28` | **Deep ink.** Text on salmon, links, selected states, meter fill, deep band, focus ring |
+| `--salmon-50` | `#F2F8FF` | Title chips, active nav pill, top of the pool band |
+| `--salmon-100` | `#E1EEFF` | Pool band, soft focus halo, hairlines on blue |
+| `--salmon-200` | `#C4DEFF` | Hover hairlines on blue |
+| `--salmon-500` | `#6AAEFA` | **The accent.** Solid fallback under the gradient, card backs, highlights |
+| `--salmon-600` | `#4D97F2` | Primary hover fallback, deck card back |
+| `--salmon-700` | `#3580E6` | Focus border on fields (3.90:1 on white) |
+| `--salmon-900` | `#1F3150` | Raised navy surfaces (rare) |
+| `--salmon-950` | `#18263D` | **Navy ink.** Labels on blue, links, selected states, meter fill, focus ring |
+| `--text-display` | `#233350` | Serif titles and the wordmark |
 | `--grey-0` | `#FFFFFF` | Page |
-| `--grey-50` | `#FAF8F6` | Hover on white rows, disabled input fill, dashed "add" cards |
-| `--grey-100` | `#F2EEEA` | Grey bands, cards on white, active nav pill, neutral pills, icon discs |
-| `--grey-150` | `#ECE8E4` | Disabled button fill |
-| `--grey-200` | `#E7E2DD` | Hairlines, neutral hover on grey, meter track, skeleton |
-| `--grey-300` | `#D9D3CD` | Dashed borders on add cards, hairlines on grey bands |
-| `--grey-500` | `#8C837D` | Input borders, missing-tag dashes, disabled labels |
-| `--grey-600` | `#6E6560` | Placeholders, tertiary text |
-| `--grey-700` | `#514944` | Secondary text, meta lines, inactive nav |
-| `--grey-900` | `#1C1613` | Primary text and headlines, toast background |
+| `--grey-50` | `#F8FAFC` | Hover on white rows, disabled input fill |
+| `--grey-100` | `#F1F4F8` | Grey bands, neutral pills, icon discs |
+| `--grey-150` | `#EAEEF3` | Disabled button fill, chip hairline |
+| `--grey-200` | `#E2E7EE` | Hairlines, meter track, skeleton |
+| `--grey-300` | `#CBD3DD` | Dashed borders on add cards |
+| `--grey-500` | `#747F92` | Input and composer outline, missing-tag dashes, disabled labels |
+| `--grey-600` | `#5F6B7E` | Placeholders, tertiary text |
+| `--grey-700` | `#475266` | Secondary text, meta lines, inactive nav |
+| `--grey-900` | `#1E2A3B` | Primary text, toast background |
 | `--red-50` | `#FDECEA` | Error banner and unknown-chip fill |
 | `--red-600` | `#B42318` | Error text, error borders, destructive buttons |
 | `--red-700` | `#93190F` | Destructive solid hover |
@@ -145,71 +147,55 @@ Every text and background pair the system uses, computed with the WCAG 2.x relat
 
 | Foreground | Background | Where | Ratio | Needs | Result |
 |---|---|---|---|---|---|
-| `--grey-900` #1C1613 | white #FFFFFF | body, headlines | 17.89 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--grey-100` #F2EEEA | text on grey bands and cards | 15.50 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--grey-50` #FAF8F6 | hovered rows | 16.89 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--grey-200` #E7E2DD | hovered neutral pills | 13.91 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--salmon-500` #00D0C0 | display headline on the salmon band | 9.19 | 3 | AAA |
-| `--grey-900` #1C1613 | `--salmon-100` #CCF5F1 | text on tinted panels | 15.25 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--red-50` #FDECEA | error banner body | 15.65 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--green-50` #E6F4EC | success panel body | 15.78 | 4.5 | AAA |
-| `--grey-900` #1C1613 | `--yellow-100` #FFF1C2 | weak-match chip label | 15.86 | 4.5 | AAA |
-| `--grey-700` #514944 | white | secondary text, meta | 8.80 | 4.5 | AAA |
-| `--grey-700` #514944 | `--grey-100` | meta on grey cards | 7.62 | 4.5 | AAA |
-| `--grey-700` #514944 | `--grey-50` | meta on hovered rows | 8.31 | 4.5 | AAA |
-| `--grey-700` #514944 | `--salmon-100` | chip meta (work counts) | 7.50 | 4.5 | AAA |
-| `--grey-700` #514944 | `--yellow-100` | weak-match chip meta | 7.80 | 4.5 | AAA |
-| `--grey-700` #514944 | `--red-50` | error banner secondary line | 7.69 | 4.5 | AAA |
-| `--grey-700` #514944 | `--green-50` | success panel secondary line | 7.76 | 4.5 | AAA |
-| `--grey-600` #6E6560 | white | placeholders, tertiary text | 5.69 | 4.5 | AA |
-| `--grey-600` #6E6560 | `--grey-100` | tertiary text on grey | 4.93 | 4.5 | AA |
-| `--grey-600` #6E6560 | `--grey-50` | placeholder in disabled field | 5.37 | 4.5 | AA |
-| `--salmon-950` #052B28 | `--salmon-500` #00D0C0 | primary button label | 7.80 | 4.5 | AAA |
-| `--salmon-950` | `--salmon-600` #00BDAE | primary label, hover | 6.43 | 4.5 | AA |
-| `--salmon-950` | `--salmon-700` #00A99B | primary label, pressed | 5.17 | 4.5 | AA |
-| `--salmon-950` | `--salmon-100` #CCF5F1 | secondary label, resolved chips | 12.95 | 4.5 | AAA |
-| `--salmon-950` | `--salmon-200` #A3EDE6 | secondary label, hover | 11.44 | 4.5 | AAA |
-| `--salmon-950` | white | links, tertiary labels, active tab | 15.19 | 4.5 | AAA |
-| `--salmon-950` | `--grey-100` | active nav label, links on grey | 13.16 | 4.5 | AAA |
-| `--salmon-950` | `--grey-50` | links on hovered rows | 14.34 | 4.5 | AAA |
-| `--salmon-950` | `--grey-200` | neutral pill hover | 11.80 | 4.5 | AAA |
-| `--salmon-950` | `--yellow-100` | weak-match chip label | 13.46 | 4.5 | AAA |
-| `--salmon-500` #00D0C0 | `--salmon-950` #052B28 | headings and links on the deep band | 7.80 | 4.5 | AAA |
-| `--salmon-50` #EBFBF9 | `--salmon-950` | body on the deep band, inverse button label | 14.25 | 4.5 | AAA |
-| `--salmon-100` #CCF5F1 | `--salmon-950` | focus ring and outline button on the deep band | 12.95 | 3 | AAA |
-| `--salmon-50` | `--salmon-900` #0A3D39 | text on raised cards inside the deep band | 11.32 | 4.5 | AAA |
-| `--salmon-500` | `--salmon-900` | icons on raised discs in the deep band | 6.20 | 3 | AA |
-| `--salmon-50` | `--grey-900` #1C1613 | toast text | 16.79 | 4.5 | AAA |
-| `--salmon-500` | `--grey-900` | toast action pill against the toast | 9.19 | 3 | AAA |
-| `--red-600` #B42318 | white | error messages, destructive labels | 6.57 | 4.5 | AA |
-| `--red-600` | `--red-50` | error banner title, unknown-chip meta | 5.75 | 4.5 | AA |
-| `--red-600` | `--grey-100` | error text on grey surfaces | 5.70 | 4.5 | AA |
-| white | `--red-600` | destructive solid label | 6.57 | 4.5 | AA |
-| white | `--red-700` #93190F | destructive solid label, hover | 8.80 | 4.5 | AAA |
-| `--yellow-900` #3D2B00 | `--yellow-300` #FFD34D | warning banner text | 9.51 | 4.5 | AAA |
-| `--yellow-900` | `--yellow-100` | weak-match chip icon | 12.06 | 3 | AAA |
-| `--green-700` #1E7044 | white | success text | 6.08 | 4.5 | AA |
-| `--green-700` | `--green-50` | password rule passed | 5.36 | 4.5 | AA |
-| white | `--green-700` | check mark in success disc | 6.08 | 3 | AA |
-| `--grey-500` #8C837D | white | input border, missing-tag dash (UI part) | 3.71 | 3 | AA UI |
-| `--grey-500` | `--grey-100` | input border on grey bands (UI part) | 3.22 | 3 | AA UI |
-| `--grey-500` | `--grey-150` #ECE8E4 | disabled button label | 3.05 | none (disabled) | exempt |
-| `--grey-500` | `--grey-50` | disabled field text | 3.50 | none (disabled) | exempt |
-| `--salmon-950` | white | focus ring (UI part) | 15.19 | 3 | AA UI |
-| `--meter-fill` #052B28 | `--meter-track` #E7E2DD | coverage meter segments | 11.80 | 3 | AA UI |
+| `--grey-900` #1E2A3B | white #FFFFFF | body, card titles | 14.49 | 4.5 | AAA |
+| `--text-display` #233350 | white #FFFFFF | serif headlines | 12.64 | 3 | AAA |
+| `--grey-900` #1E2A3B | `--grey-100` #F1F4F8 | text on grey bands | 13.13 | 4.5 | AAA |
+| `--grey-900` #1E2A3B | `--salmon-100` #E1EEFF | text on the pool band | 12.33 | 4.5 | AAA |
+| `--grey-700` #475266 | white #FFFFFF | secondary text, meta | 7.87 | 4.5 | AAA |
+| `--grey-700` #475266 | `--grey-100` #F1F4F8 | meta on grey cards | 7.14 | 4.5 | AAA |
+| `--grey-700` #475266 | `--salmon-100` #E1EEFF | secondary text on the pool band | 6.70 | 4.5 | AA |
+| `--grey-600` #5F6B7E | white #FFFFFF | placeholders, tertiary text | 5.40 | 4.5 | AA |
+| `--grey-600` #5F6B7E | `--grey-100` #F1F4F8 | tertiary text on grey | 4.89 | 4.5 | AA |
+| `--salmon-950` #18263D | gradient top #84BEFF | primary label, top of the gradient | 7.80 | 4.5 | AAA |
+| `--salmon-950` #18263D | gradient bottom #4A90F0 | primary label, bottom of the gradient | 4.73 | 4.5 | AA |
+| `--salmon-950` #18263D | hover bottom #3D86EC | primary label, hover (bottom) | 4.21 | 4.5 | FAIL |
+| `--salmon-950` #18263D | pressed bottom #3279E0 | primary label, pressed (bottom) | 3.58 | 4.5 | FAIL |
+| `--salmon-950` #18263D | white #FFFFFF | links, secondary and tertiary labels | 15.18 | 4.5 | AAA |
+| `--salmon-950` #18263D | `--salmon-50` #F2F8FF | title chips, active nav | 14.20 | 4.5 | AAA |
+| `--salmon-950` #18263D | closing band edge #5A9EF5 | closing band headline and line | 5.53 | 4.5 | AA |
+| `--grey-500` #8792A2 | white #FFFFFF | input and composer outline (UI part) | 3.15 | 3 | AA UI |
+| `--grey-500` #8792A2 | `--grey-100` #F1F4F8 | outline on grey bands (UI part) | 2.86 | 3 | FAIL |
+| `--salmon-700` #3580E6 | white #FFFFFF | focus border on fields (UI part) | 3.90 | 3 | AA UI |
+| `--salmon-950` #18263D | white #FFFFFF | focus ring (UI part) | 15.18 | 3 | AAA |
+| `--red-600` #B42318 | white #FFFFFF | error messages | 6.57 | 4.5 | AA |
+| `--red-600` #B42318 | `--red-50` #FDECEA | error banner title | 5.75 | 4.5 | AA |
+| `--green-700` #1E7044 | `--green-50` #E6F4EC | password rule passed | 5.36 | 4.5 | AA |
 
 Intentionally below 3:1, with the reason:
 
-- `--salmon-500` on white is **1.95:1**. Salmon is never used for text, icons or thin lines on white. As a button fill the 7.41:1 label identifies the button, so the fill edge does not need 3:1 (WCAG 1.4.11 note on text-identified controls). The same holds for Wise's green.
-- `--grey-200` hairlines on white (1.29:1) and `--grey-300` (1.48:1) are decorative separators. No meaning depends on seeing them.
+- `--salmon-500` on white is **2.32:1**. Blue is never used for text, icons or thin lines on white. As a button fill it carries a navy label (4.7:1 or more), so the fill edge does not need 3:1 (WCAG 1.4.11 note on text-identified controls).
+- White text on the blue gradient (Pool's own choice) measures **1.95 to 3.21:1**, so salmon does not use it. Labels on blue are `--salmon-950`.
+- `--grey-200` and `--grey-300` hairlines are decorative separators. No meaning depends on seeing them.
+
+### 2.5 Light and glow
+
+| Token | Value | Use |
+|---|---|---|
+| `--accent-grad` | `linear-gradient(180deg, #84BEFF, #4A90F0)` | Primary buttons, active tab pill |
+| `--accent-grad-hover` | `#92C8FF` to `#5A9EF5` | Hover brightens, it never darkens |
+| `--accent-grad-active` | `#7AB7FD` to `#4A90F0` | Pressed |
+| `--glow-accent` | `0 12px 28px -8px rgba(61,134,236,.60)` plus a 1 px white inner highlight on top | Under anything on the gradient |
+| `--shadow-soft` | `0 1px 2px rgba(30,42,59,.04), 0 8px 28px rgba(30,42,59,.08)` | White pills: secondary and tertiary buttons, chips, fields, cards |
+| `--ring-focus-soft` | `0 0 0 4px var(--salmon-100)` | Halo around a focused field, outside its 2 px `--salmon-700` border |
+| `--bg-deep` | `linear-gradient(180deg, --salmon-50, --salmon-100)` | The "deep" band, now pale pool water with dark text |
 
 ### 2.4 Colour rules
 
-- Salmon is a fill, never a text colour on light backgrounds. Need accent text on white? Use `--deep`.
-- One full-bleed salmon band and one deep band per page, at most. Everything else is white or `--grey-100`.
+- Blue is a fill or a glow, never a text colour. Need accent text on white? Use `--salmon-950`.
+- One blue closing band and one pool band per page, at most. Everything else is white or `--grey-100`.
+- Gradients only for the accent (2.5) and the pool and closing bands. No other gradients, no glass except the mobile tab bar's frosted white.
 - State is never colour alone. Saved works also switch to a filled icon and a new accessible name. Missing tropes also get a dashed outline, a minus icon and the word "Missing". Errors also get an icon and a message.
 - Status colours (red, yellow, green) appear only in banners, field errors, chips that need attention, and the password rule. Never as decoration.
-- No gradients, no glass, no dither. The one exception is the skeleton shimmer, which is grey on grey.
 
 ---
 
@@ -219,31 +205,20 @@ Intentionally below 3:1, with the reason:
 
 | Role | Family | Weights | Axes | Licence |
 |---|---|---|---|---|
-| Display: headlines, section titles, stats | **Archivo** | 900 only | width (`wdth`) set to 85 | SIL OFL 1.1 |
-| Text: everything else | **Inter** | 400 and 600 only | none | SIL OFL 1.1 |
+| Display: headlines, page titles (`.h1`, `.heading-l`, `.heading-xl`), stats, wordmark | **Newsreader** | 500 (titles), 600 (wordmark, card titles) | optical size (`opsz`), automatic | SIL OFL 1.1 |
+| Text: everything else, including `.h2` and `.h3` | **Inter** | 400 and 600 only | none | SIL OFL 1.1 |
 
-Archivo at weight 900 and 85 % width is heavy and slightly condensed, so a six-word headline sits on two or three lines at hero size. Inter is the text face because its sizes and metrics line up with the reference measurements, it has tabular figures for counts, and it reads well at 14 px.
+Newsreader is a text serif with an optical-size axis, so at hero sizes it switches to its tighter display cut by itself. Titles are sentence case in `--text-display` (#233350), tracked in by 1 to 2.5 %, with line height near 1 (more than 2.0's condensed caps needed). Inter stays the text face for its metrics, tabular figures and legibility at 14 px.
 
-Google Fonts stylesheet (dev and static pages):
-
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85,900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-```
-
-In the Next.js app, load both with `next/font/google` in `app/layout.tsx` (self-hosted at build time), expose them as `--font-display` and `--font-text`, and drop VT323 and Silkscreen. `frontend/AGENTS.md` warns that this Next version differs from older docs, so check `node_modules/next/dist/docs/` for the current `next/font` options (variable axes for Archivo's `wdth`).
+Both load through `next/font/google` in `app/layout.tsx` and are exposed as `--font-display` and `--font-text`:
 
 ```css
 :root {
-  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
   --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
-.display { font-family: var(--font-display); font-weight: 900; font-stretch: 85%;
-  text-transform: uppercase; font-synthesis: none; }
-body { font-family: var(--font-text); font-weight: 400; color: var(--text);
-  font-feature-settings: "cv11", "ss01"; -webkit-font-smoothing: antialiased; }
-.num { font-variant-numeric: tabular-nums; }
+.display { font-family: var(--font-display); font-weight: 500; font-optical-sizing: auto;
+  color: var(--text-display); font-synthesis: none; text-wrap: balance; }
 ```
 
 ### 3.2 Scale
@@ -252,11 +227,11 @@ Mobile values apply below 768 px. Between 768 and 1280 px, display sizes scale w
 
 | Token | Family, weight | Desktop size / line height | Mobile size / line height | Tracking | Case | Use |
 |---|---|---|---|---|---|---|
-| `display-xl` | Archivo 900, 85 % | 120 / 104 | 56 / 50 | -0.01em | UPPER | Landing hero only (one sentence per line on `lg`+) |
-| `display-l` | Archivo 900, 85 % | 96 / 84 | 44 / 40 | -0.01em | UPPER | Closing band, 404 |
-| `display-m` | Archivo 900, 85 % | 64 / 56 | 36 / 34 | -0.005em | UPPER | Landing section titles, work title |
-| `display-s` | Archivo 900, 85 % | 40 / 36 | 30 / 28 | 0 | UPPER | Card titles in caps, `/app` empty heading |
-| `stat` | Archivo 900, 85 % | 72 / 72 | 44 / 44 | -0.01em | figures | Proof numbers |
+| `display-xl` | Newsreader 500 | 112 / 112 | 56 / 58 | -0.025em | Sentence | Landing hero only (one sentence per line on `lg`+) |
+| `display-l` | Newsreader 500 | 84 / 87 | 44 / 46 | -0.02em | Sentence | Closing band, 404 |
+| `display-m` | Newsreader 500 | 60 / 65 | 36 / 40 | -0.015em | Sentence | Landing section titles, work title |
+| `display-s` | Newsreader 500 | 40 / 44 | 30 / 34 | 0 | Sentence | Card titles, `/app` empty heading |
+| `stat` | Newsreader 500 | 72 / 72 | 44 / 44 | -0.02em | lining figures | Proof numbers |
 | `heading-xl` | Inter 600 | 52 / 56 | 34 / 40 | -0.02em | Sentence | Story and split headings, deep band heading |
 | `heading-l` | Inter 600 | 40 / 48 | 28 / 36 | -0.015em | Sentence | Feature split headings |
 | `h1` | Inter 600 | 32 / 40 | 28 / 36 | -0.01em | Sentence | App page titles (Saved, History), auth titles |
@@ -272,7 +247,7 @@ Mobile values apply below 768 px. Between 768 and 1280 px, display sizes scale w
 
 Rules:
 
-- Display is uppercase through `text-transform`, so screen readers and copy-paste get normal case. Write display copy in sentence case in the source.
+- Display is sentence case, written that way in the source. No `text-transform`.
 - Display text is never smaller than 30 px and never used for more than 8 words, except the work title.
 - Nothing in the product is smaller than 13 px, and 13 px only in the mobile tab bar. Meta text is 14 px.
 - Only two weights of Inter: 400 to read, 600 to act or label. No italic in UI. Emphasis is 600.
@@ -311,10 +286,10 @@ Rules:
 ```css
 :root {
   --radius-xs: 4px;    /* checkbox */
-  --radius-s: 10px;    /* text inputs, textareas, toasts use 12 */
-  --radius-m: 16px;    /* app cards, result cards, banners, menus, listboxes */
-  --radius-l: 24px;    /* modals, medium marketing cards, about card */
-  --radius-xl: 32px;   /* large marketing cards, step cards, hero stage */
+  --radius-s: 14px;    /* text inputs, textareas, toasts use 16 */
+  --radius-m: 22px;    /* app cards, result cards, banners, menus, listboxes */
+  --radius-l: 32px;    /* modals, medium marketing cards, about card */
+  --radius-xl: 40px;   /* large marketing cards, step cards, hero stage */
   --radius-full: 999px;/* buttons, chips, tags, search fields, nav pills, discs */
 }
 ```
@@ -364,8 +339,8 @@ Z-index: base 0, sticky composer 10, top bar 20, menu 30, scrim 40, modal 50, to
 ### 4.6 Icons and imagery
 
 - Icons: 24 px grid, 1.75 px outline stroke, round caps and joins. Filled variants only for the active nav item and the saved state. Use an open set such as Lucide (ISC licence). Sizes 16, 20, 24, 32.
-- No illustrations, no stock photos, no 3D objects. Imagery is real product UI with real data, cropped by the section edge.
-- Logo: the salmon pixel fish, recoloured to `--salmon-500` with a `--salmon-950` eye and without the 1-bit window frame, next to the wordmark "salmon" set in Archivo 900 lowercase. The name is always lowercase.
+- No stock photos. Imagery is real product UI with real data, plus one decorative 3D scene: the planet ringed by glossy puffy 3D emojis (smileys, hearts, stars, a bolt, a sparkle, a camera and a clapperboard).
+- Logo: a glossy coral toy salmon (`FishMark` in `ui/Logo.tsx`, gradient ids made unique per instance), next to the wordmark "salmon" in Newsreader 600 lowercase. The app icon (`app/icon.svg`) puts the same fish on a sky-blue squircle. The name is always lowercase.
 
 ---
 
@@ -696,7 +671,7 @@ Target: WCAG 2.2 AA everywhere, AAA contrast for body text where the palette all
 
 - **Plain and short.** One idea per sentence. Most sentences under 15 words.
 - **Second person.** "Your tropes", "you can". salmon is "salmon", lowercase, never "we" in product UI. Marketing may use "salmon" as the subject.
-- **Sentence case** for everything, including buttons, headings and labels. The only uppercase is display type, and it is written in sentence case in the source.
+- **Sentence case** for everything, including buttons, headings and labels. Nothing is uppercase.
 - **Verb-first buttons, 1 to 4 words:** "Search", "Save search", "Run again", "Find works like this", "Open salmon".
 - **Say what happened and what to do next.** Errors name the fix, not the fault: "Use at least 8 characters." not "Invalid password."
 - **Be specific to tropes and stories.** Name real tropes and real works from the data in examples. No generic "content" or "items".
@@ -767,8 +742,8 @@ Container 1120. Bands alternate white and `--grey-100`. Section padding 128 / 96
 | # | Section | Band | Layout | References |
 |---|---|---|---|---|
 | 1 | Marketing nav | white | 5.8 | m01, m19 |
-| 2 | **Hero** | white, then salmon stage | Centred. `display-xl` headline "Vibe, don't search." (2 lines desktop). Then the hero search, 40 below: a 64 tall pill field (label "Tropes to search for", placeholder "true companions + the caper + anti-hero") with primary L "Search" inside, max 640; a plain GET form to `/app` with `name="q"`, so it works without JavaScript. Under it: tertiary L "See examples". No subline and no hint. Then the planet, pulled up 48 (16 on mobile) so it starts just under the buttons: a three.js scene (`_landing/PlanetScene.tsx`, three loaded on demand) up to 1120 wide at 3:2 (5:4 on mobile). A sphere with a painterly teal, blue and green surface from 3D noise turns on a tilted axis, lit from the top left, and 8 orbiters circle it on a ring that rises to the right: coral coins carrying the pixel fish, mixed with pixel-art voxel symbols (a gold star, a pink heart, a lilac lightning bolt) that each flip slowly on their own axis, passing in front of and behind it. Decorative and `aria-hidden`; one still frame under reduced motion; paused off screen; a CSS disc (`public/planet.svg`) shows until it draws and when WebGL is missing. Below, a salmon stage (1120 wide, radius 32 on top, `--salmon-500`) with a white app card rising out of it showing the real top 3 results for that query, cropped by the next band. | m01 (structure), m02 (accent stage), m03 (real UI as the image) |
-| 2a | **Deck** | `--salmon-900` band | `_landing/Deck.tsx`. Heading `display-l` "Every story is a hand of tropes" in `--salmon-500`, then a runway 380vh tall whose stage sticks to the viewport. Four 5:7 cards (up to 296 wide; 176 on phones) start as a face-down deck, fan open, spread into a row (a 2 by 2 grid under 640) and flip one after another, left to right, each lifting toward the viewer as it turns. The table has 1100 px perspective, so the flips read as depth. Scroll sets each card's target; springs (slightly underdamped) chase it, so cards swing a touch past face up and settle. Back: original line art in `--deck-back` (#00A99B) with the pixel fish in a medallion. Front: title in Archivo 900, a pixel suit (heart, bolt, star, coin), a TMDB still (a 16:9 backdrop without title text), a meta line, four real trope names, and an upside-down footer. Cards: The Office, Silicon Valley, Game of Thrones (not in the dump, so it runs a search for its four tropes) and Detectorists, the hidden gem (8.2 on TMDB from 205 votes). Each card links to its work. Without JavaScript and under reduced motion the cards sit face up in a row. Credit line under the table names TVTropes and TMDB with the TMDB notice. | own design; motion studied from the card section on lusion.co/about |
+| 2 | **Hero** | white, then salmon stage | Centred. `display-xl` headline "Vibe, don't search." (2 lines desktop). Then the hero search, 40 below: a 64 tall pill field (label "Tropes to search for", placeholder "true companions + the caper + anti-hero") with primary L "Search" inside, max 640; a plain GET form to `/app` with `name="q"`, so it works without JavaScript. No button under it, no subline and no hint. Then the planet, 32 below (24 on mobile): a three.js scene (`_landing/PlanetScene.tsx`, three loaded on demand) up to 1120 wide at 3:2 (5:4 on mobile). A sphere with a painterly teal, blue and green surface from 3D noise turns on a tilted axis, lit from the top left, and 10 orbiters circle it on a ring that rises to the right: glossy puffy 3D emojis (smileys, a heart, a star, a bolt, a sparkle) plus a camera and a clapperboard whose clapstick snaps shut every few seconds. Each rocks gently on its own axis as it passes in front of and behind the planet. Decorative and `aria-hidden`; one still frame under reduced motion; paused off screen; a CSS disc (`public/planet.svg`) shows until it draws and when WebGL is missing. Below, a salmon stage (1120 wide, radius 32 on top, `--salmon-500`) with a white app card rising out of it showing the real top 3 results for that query, cropped by the next band. | m01 (structure), m02 (accent stage), m03 (real UI as the image) |
+| 2a | **Deck** | white to `--salmon-100` gradient | `_landing/Deck.tsx`. Heading `display-l` "Every story is a hand of tropes" in `--text-display`, then a runway 380vh tall whose stage sticks to the viewport. Four 5:7 cards (up to 296 wide; 176 on phones) start as a face-down deck, fan open, spread into a row (a 2 by 2 grid under 640) and flip one after another, left to right, each lifting toward the viewer as it turns. The table has 1100 px perspective, so the flips read as depth. Scroll sets each card's target; springs (slightly underdamped) chase it, so cards swing a touch past face up and settle. Back: original line art in `--deck-back` (#4D97F2) with the pixel fish in a medallion. Front: title in Newsreader 600, a pixel suit (heart, bolt, star, coin), a TMDB still (a 16:9 backdrop without title text), a meta line, four real trope names, and an upside-down footer. Cards: The Office, Silicon Valley, Game of Thrones (not in the dump, so it runs a search for its four tropes) and Detectorists, the hidden gem (8.2 on TMDB from 205 votes). Each card links to its work. Without JavaScript and under reduced motion the cards sit face up in a row. No credit line under the table; TMDB is credited in the footer and on work pages. | own design; motion studied from the card section on lusion.co/about |
 | 3 | **Proof numbers** | grey | A 560 hairline centred, then 4 stats split by 1 px vertical hairlines: 85,633 works, 33,164 tropes, 16 media types, 12 tropes from one title. `stat` numbers, 18/26 600 labels. 2 x 2 on mobile. | m12 |
 | 4 | **How it works** | grey (continues) or white | `display-m` title, one primary L "Try a search" above the cards, 3 white step cards (radius 32, padding 40, gap 24): big numeral in Inter 400 72 px `--grey-700`, step title h2, one-sentence body. Stacked on mobile. | m06, m07 |
 | 5 | **Real results** (deep band) | deep | Left: `heading-xl` in `--salmon-500` + `body-l` intro in `--salmon-50`. Right: white result card list (radius 24) with the real query and 5 real rows. Under it, 3 features with 72 px `--salmon-900` icon discs and `--salmon-500` titles explaining ranking rules. | m10, m09 |
@@ -825,7 +800,7 @@ Same app shell (Search stays active). References: a12 (detail page with back but
 
 1. Back icon button 48 "Back to results" (uses history when the previous page is `/app`, otherwise links to `/app`).
 2. Eyebrow 14/20 600 `--text-secondary`: media label ("TV series").
-3. Title: `display-m`, uppercase, wraps freely.
+3. Title: `display-m`, wraps freely.
 4. Meta 16/24 `--text-secondary`: "586 tropes".
 5. Actions, gap 12: primary M "Find works like this" (`/app?q=like Firefly`), secondary M toggle "Save" / "Saved" with bookmark icon (signed out: `/login?next=`), tertiary M "Open on TVTropes" (external).
 6. About card (medium, `--grey-100`, radius 24, padding 32): h3 "About", intro 16/24 max 680, or "No description in this dataset." in `--text-secondary`.
@@ -998,4 +973,4 @@ Screens studied on Mobbin (Wise, web). Structure only; nothing in this list is c
 
 ---
 
-salmon design system 2.0. Archivo and Inter under the SIL Open Font License. Trope data from TVTropes.org, CC BY-NC-SA.
+salmon design system 3.0. Newsreader and Inter under the SIL Open Font License. Trope data from TVTropes.org, CC BY-NC-SA.

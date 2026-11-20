@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { FISH_BODY } from "../ui/Logo";
-import { PIXELS, type PixelArt } from "./pixels";
 
 // The landing planet in three.js: a sphere that turns on a tilted axis with a
 // painterly surface from 3D noise (so it has no seams), and a tilted ring of
-// orbiters: coral fish coins (lit discs with thickness) mixed with pixel-art
-// voxel symbols, a gold star, a pink heart and a lilac lightning bolt. three is
+// orbiters: glossy puffy 3D emojis (smileys, hearts, stars, a bolt, a sparkle)
+// with a camera and a clapperboard whose clapstick snaps shut. three is
 // loaded on demand after the page is up. Until it draws, or when WebGL is
 // missing, the CSS planet underneath shows instead. Reduced motion draws one
 // still frame; nothing animates while the scene is off screen.
@@ -82,53 +80,23 @@ void main() {
 `;
 
 /** What sits in each of the 8 places on the ring, in orbit order. */
-const ORBITERS = ["coin", "star", "heart", "coin", "bolt", "star", "coin", "heart"] as const;
+const ORBITERS = [
+  "smiley", "camera", "heart", "star", "clapper", "bolt", "smiley", "camera", "sparkle", "clapper",
+] as const;
+type ShapeKind = "heart" | "star" | "bolt" | "sparkle";
 
 const ORBIT = 1.7; // orbit radius, planet radius is 1
-const COIN_R = 0.27;
-const COIN_T = 0.06;
+const SIZE = 0.5; // longest side of an orbiter
 const LAP = 24; // seconds per orbit
 const TURN = 40; // seconds per planet turn
 
-/** Coin face art: coral disc, raised rim and the pixel fish. `bump` draws the height map. */
-function coinCanvas(bump: boolean): HTMLCanvasElement {
-  const size = 512;
-  const c = document.createElement("canvas");
-  c.width = c.height = size;
-  const g = c.getContext("2d")!;
-  const mid = size / 2;
-  if (bump) {
-    g.fillStyle = "#777";
-    g.fillRect(0, 0, size, size);
-  } else {
-    const grad = g.createRadialGradient(mid * 0.7, mid * 0.6, 10, mid, mid, mid);
-    grad.addColorStop(0, "#FFC9B2");
-    grad.addColorStop(0.45, "#FF9474");
-    grad.addColorStop(1, "#E0623F");
-    g.fillStyle = grad;
-    g.fillRect(0, 0, size, size);
-  }
-  // raised rim ring
-  g.lineWidth = 26;
-  g.strokeStyle = bump ? "#eee" : "#F48464";
-  g.beginPath();
-  g.arc(mid, mid, mid - 22, 0, Math.PI * 2);
-  g.stroke();
-  g.lineWidth = 6;
-  g.strokeStyle = bump ? "#555" : "#C9563A";
-  g.beginPath();
-  g.arc(mid, mid, mid - 40, 0, Math.PI * 2);
-  g.stroke();
-  // the fish, 15 x 10 cells
-  const cell = 17;
-  const ox = mid - (15 * cell) / 2;
-  const oy = mid - (10 * cell) / 2;
-  g.fillStyle = bump ? "#fff" : "#C9563A";
-  for (const m of FISH_BODY.matchAll(/M(\d+) (\d+)h(\d+)v1/g)) {
-    g.fillRect(ox + Number(m[1]) * cell, oy + Number(m[2]) * cell, Number(m[3]) * cell, cell);
-  }
-  return c;
-}
+/** Colour of each puffy emoji, saturated a little past the target to survive ACES tone mapping. */
+const TINT: Record<ShapeKind, number> = {
+  heart: 0xff2a5c,
+  star: 0xffa800,
+  bolt: 0x8f5bff,
+  sparkle: 0x1fa8ff,
+};
 
 export function PlanetScene() {
   const ref = useRef<HTMLDivElement>(null);
@@ -142,8 +110,8 @@ export function PlanetScene() {
     Promise.all([
       import("three"),
       import("three/examples/jsm/environments/RoomEnvironment.js"),
-      import("three/examples/jsm/utils/BufferGeometryUtils.js"),
-    ]).then(([THREE, { RoomEnvironment }, { mergeGeometries }]) => {
+      import("three/examples/jsm/geometries/RoundedBoxGeometry.js"),
+    ]).then(([THREE, { RoomEnvironment }, { RoundedBoxGeometry }]) => {
       if (cancelled) return;
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
       try {
@@ -156,12 +124,12 @@ export function PlanetScene() {
       host.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
-      // soft studio reflections so the coins read as polished metal, not flat paint
+      // soft studio reflections give the emojis their glossy highlights
       const pmrem = new THREE.PMREMGenerator(renderer);
       const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
       pmrem.dispose();
       scene.environment = env;
-      scene.environmentIntensity = 0.55;
+      scene.environmentIntensity = 0.5;
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
 
       // light from the top left, matching the planet shader's sun
@@ -185,77 +153,235 @@ export function PlanetScene() {
       axis.add(planet);
       scene.add(axis);
 
-      // coins: side, top face, bottom face
-      const face = new THREE.CanvasTexture(coinCanvas(false));
-      face.colorSpace = THREE.SRGBColorSpace;
-      face.anisotropy = 4;
-      const bump = new THREE.CanvasTexture(coinCanvas(true));
-      const faceMat = new THREE.MeshStandardMaterial({
-        map: face,
-        bumpMap: bump,
-        bumpScale: 2.2,
-        metalness: 0.15,
-        roughness: 0.42,
-      });
-      const sideMat = new THREE.MeshStandardMaterial({ color: 0xe56f4c, metalness: 0.15, roughness: 0.5 });
-      const coinGeo = new THREE.CylinderGeometry(COIN_R, COIN_R, COIN_T, 64);
       const ring = new THREE.Group();
       ring.rotation.z = 0.46;
       ring.rotation.x = 0.3;
       const spin = new THREE.Group();
       ring.add(spin);
       scene.add(ring);
-      // voxel symbols: one merged geometry of cubes per pixel-art shape, centred
-      const disposables: { dispose: () => void }[] = [];
-      const voxels = {} as Record<keyof typeof PIXELS, InstanceType<typeof THREE.Mesh>>;
-      for (const [kind, art] of Object.entries(PIXELS) as [keyof typeof PIXELS, PixelArt][]) {
-        const cols = art.rows[0].length;
-        const cell = art.size / cols;
-        const cubes: InstanceType<typeof THREE.BoxGeometry>[] = [];
-        art.rows.forEach((row, y) => {
-          [...row].forEach((ch, x) => {
-            if (ch !== "#") return;
-            const b = new THREE.BoxGeometry(cell, cell, cell * 2);
-            b.translate((x - (cols - 1) / 2) * cell, ((art.rows.length - 1) / 2 - y) * cell, 0);
-            cubes.push(b);
-          });
-        });
-        const geo = mergeGeometries(cubes)!;
-        cubes.forEach((b) => b.dispose());
-        const mat = new THREE.MeshStandardMaterial({
-          color: art.color,
-          emissive: art.glow,
-          emissiveIntensity: 0.3,
-          metalness: 0.1,
-          roughness: 0.45,
-          flatShading: true,
-        });
-        disposables.push(geo, mat);
-        voxels[kind] = new THREE.Mesh(geo, mat);
-      }
 
-      // each orbiter turns slowly on its own axis so its depth shows
+      // puffy 3D emojis: flat shapes extruded with a deep, round bevel, under a
+      // clear coat, so they read like glossy toys
+      const disposables: { dispose: () => void }[] = [];
+      const gloss = (color: number) => {
+        const m = new THREE.MeshPhysicalMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 0.08,
+          roughness: 0.3,
+          metalness: 0,
+          clearcoat: 1,
+          clearcoatRoughness: 0.12,
+        });
+        disposables.push(m);
+        return m;
+      };
+      const puff = (shape: InstanceType<typeof THREE.Shape>, bevel: number) => {
+        const geo = new THREE.ExtrudeGeometry(shape, {
+          depth: bevel * 0.6,
+          bevelEnabled: true,
+          bevelThickness: bevel * 1.4,
+          bevelSize: bevel,
+          bevelSegments: 10,
+          curveSegments: 28,
+        });
+        geo.center();
+        geo.computeBoundingBox();
+        const box = geo.boundingBox!;
+        const k = SIZE / Math.max(box.max.x - box.min.x, box.max.y - box.min.y);
+        geo.scale(k, k, k);
+        disposables.push(geo);
+        return geo;
+      };
+
+      const heart = new THREE.Shape();
+      heart.moveTo(5, 5);
+      heart.bezierCurveTo(5, 5, 4, 0, 0, 0);
+      heart.bezierCurveTo(-6, 0, -6, 7, -6, 7);
+      heart.bezierCurveTo(-6, 11, -3, 15.4, 5, 19);
+      heart.bezierCurveTo(12, 15.4, 16, 11, 16, 7);
+      heart.bezierCurveTo(16, 7, 16, 0, 10, 0);
+      heart.bezierCurveTo(7, 0, 5, 5, 5, 5);
+      const heartGeo = puff(heart, 2.2);
+      heartGeo.rotateZ(Math.PI); // the curve above draws it point up
+
+      const star = new THREE.Shape();
+      for (let i = 0; i < 10; i++) {
+        const r = i % 2 ? 4.4 : 10;
+        const a = Math.PI / 2 + (i * Math.PI) / 5;
+        if (i) star.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        else star.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      const starGeo = puff(star, 1.9);
+
+      const bolt = new THREE.Shape();
+      const pts = [[-1, 11], [6, 11], [2, 3], [7, 3], [-3, -11], [-0.5, -1], [-5.5, -1]];
+      pts.forEach(([x, y], i) => (i ? bolt.lineTo(x, y) : bolt.moveTo(x, y)));
+      const boltGeo = puff(bolt, 1.3);
+
+      const sparkle = new THREE.Shape();
+      sparkle.moveTo(0, 10);
+      sparkle.quadraticCurveTo(1.6, 1.6, 10, 0);
+      sparkle.quadraticCurveTo(1.6, -1.6, 0, -10);
+      sparkle.quadraticCurveTo(-1.6, -1.6, -10, 0);
+      sparkle.quadraticCurveTo(-1.6, 1.6, 0, 10);
+      const sparkleGeo = puff(sparkle, 1.4);
+
+      const shapes = { heart: heartGeo, star: starGeo, bolt: boltGeo, sparkle: sparkleGeo };
+      const mats = {
+        heart: gloss(TINT.heart),
+        star: gloss(TINT.star),
+        bolt: gloss(TINT.bolt),
+        sparkle: gloss(TINT.sparkle),
+      };
+
+      // the smiley: a glossy yellow ball with a face on its outward side
+      const R = SIZE / 2;
+      const faceGeo = new THREE.SphereGeometry(R, 48, 32);
+      const eyeGeo = new THREE.SphereGeometry(R * 0.14, 16, 12);
+      const smileGeo = new THREE.TorusGeometry(R * 0.42, R * 0.07, 12, 40, Math.PI);
+      const cheekGeo = new THREE.CircleGeometry(R * 0.13, 24);
+      disposables.push(faceGeo, eyeGeo, smileGeo, cheekGeo);
+      const yellow = gloss(0xffb800);
+      const ink = new THREE.MeshPhysicalMaterial({ color: 0x3a2412, roughness: 0.35, clearcoat: 1 });
+      const blush = new THREE.MeshBasicMaterial({ color: 0xff7a7a, transparent: true, opacity: 0.55 });
+      disposables.push(ink, blush);
+      const smiley = () => {
+        const g = new THREE.Group();
+        g.add(new THREE.Mesh(faceGeo, yellow));
+        for (const side of [-1, 1]) {
+          const eye = new THREE.Mesh(eyeGeo, ink);
+          eye.scale.set(1, 1.5, 0.6);
+          eye.position.set(side * R * 0.33, R * 0.22, R * 0.9);
+          const cheek = new THREE.Mesh(cheekGeo, blush);
+          cheek.position.set(side * R * 0.58, -R * 0.12, R * 0.8);
+          cheek.lookAt(cheek.position.clone().multiplyScalar(2));
+          g.add(eye, cheek);
+        }
+        const smile = new THREE.Mesh(smileGeo, ink);
+        smile.rotation.z = Math.PI; // the arc hangs down
+        smile.rotation.x = -0.25;
+        smile.position.set(0, -R * 0.05, R * 0.86);
+        g.add(smile);
+        return g;
+      };
+
+      const rbox = (w: number, h: number, d: number, r: number) => {
+        const geo = new RoundedBoxGeometry(w, h, d, 5, r);
+        disposables.push(geo);
+        return geo;
+      };
+      const plain = (color: number, roughness = 0.3) => {
+        const m = new THREE.MeshPhysicalMaterial({ color, roughness, clearcoat: 1, clearcoatRoughness: 0.15 });
+        disposables.push(m);
+        return m;
+      };
+
+      // the camera: a chunky body with a big glass lens, a viewfinder bump and a red button
+      const camBody = rbox(SIZE, SIZE * 0.7, SIZE * 0.4, SIZE * 0.13);
+      const camTop = rbox(SIZE * 0.34, SIZE * 0.16, SIZE * 0.3, SIZE * 0.06);
+      const lensRing = new THREE.CylinderGeometry(SIZE * 0.25, SIZE * 0.27, SIZE * 0.14, 40);
+      const lensGlass = new THREE.SphereGeometry(SIZE * 0.19, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+      const camButton = new THREE.CylinderGeometry(SIZE * 0.06, SIZE * 0.06, SIZE * 0.06, 20);
+      disposables.push(lensRing, lensGlass, camButton);
+      const camShell = gloss(0xf3f5f9);
+      const camDark = plain(0x26324a, 0.4);
+      const camLens = new THREE.MeshPhysicalMaterial({
+        color: 0x3f8cf0, roughness: 0.05, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.02,
+      });
+      const camRed = gloss(0xff4d5e);
+      disposables.push(camLens);
+      const filmCamera = () => {
+        const g = new THREE.Group();
+        g.add(new THREE.Mesh(camBody, camShell));
+        const top = new THREE.Mesh(camTop, camDark);
+        top.position.set(-SIZE * 0.1, SIZE * 0.38, 0);
+        const ring = new THREE.Mesh(lensRing, camDark);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.z = SIZE * 0.24;
+        const glass = new THREE.Mesh(lensGlass, camLens);
+        glass.rotation.x = Math.PI / 2;
+        glass.scale.set(1, 0.45, 1);
+        glass.position.z = SIZE * 0.3;
+        const button = new THREE.Mesh(camButton, camRed);
+        button.position.set(SIZE * 0.3, SIZE * 0.37, 0);
+        g.add(top, ring, glass, button);
+        return g;
+      };
+
+      // the clapperboard: a dark slate with chalk lines, and a striped clapstick
+      // hinged at the left that snaps shut now and then
+      const stripes = document.createElement("canvas");
+      stripes.width = 256;
+      stripes.height = 64;
+      const sx = stripes.getContext("2d")!;
+      sx.fillStyle = "#1f2533";
+      sx.fillRect(0, 0, 256, 64);
+      sx.fillStyle = "#ffffff";
+      for (let x = -64; x < 320; x += 64) {
+        sx.beginPath();
+        sx.moveTo(x, 64);
+        sx.lineTo(x + 32, 64);
+        sx.lineTo(x + 64, 0);
+        sx.lineTo(x + 32, 0);
+        sx.fill();
+      }
+      const stripeTex = new THREE.CanvasTexture(stripes);
+      stripeTex.colorSpace = THREE.SRGBColorSpace;
+      const stripeMat = new THREE.MeshPhysicalMaterial({ map: stripeTex, roughness: 0.35, clearcoat: 1 });
+      disposables.push(stripeTex, stripeMat);
+      const W = SIZE;
+      const slateGeo = rbox(W, W * 0.66, W * 0.12, W * 0.06);
+      const stickGeo = rbox(W, W * 0.17, W * 0.12, W * 0.05);
+      const chalkGeo = rbox(W * 0.7, W * 0.035, W * 0.02, W * 0.012);
+      const slateMat = plain(0x262c3a, 0.45);
+      const chalkMat = plain(0xf3f5f9, 0.6);
+      const clapsticks: { obj: InstanceType<typeof THREE.Group>; phase: number }[] = [];
+      const clapper = () => {
+        const g = new THREE.Group();
+        const slate = new THREE.Mesh(slateGeo, slateMat);
+        slate.position.y = -W * 0.12;
+        const band = new THREE.Mesh(stickGeo, stripeMat);
+        band.position.y = W * 0.12;
+        g.add(slate, band);
+        for (let k = 0; k < 3; k++) {
+          const line = new THREE.Mesh(chalkGeo, chalkMat);
+          line.position.set(k === 2 ? -W * 0.12 : 0, -W * (0.04 + k * 0.13), W * 0.065);
+          if (k === 2) line.scale.x = 0.6;
+          g.add(line);
+        }
+        const hinge = new THREE.Group();
+        hinge.position.set(-W / 2, W * 0.2, 0);
+        const stick = new THREE.Mesh(stickGeo, stripeMat);
+        stick.position.set(W / 2, W * 0.09, 0);
+        hinge.add(stick);
+        g.add(hinge);
+        clapsticks.push({ obj: hinge, phase: clapsticks.length * 2.1 });
+        return g;
+      };
+
+      const build = (kind: (typeof ORBITERS)[number]) => {
+        if (kind === "smiley") return smiley();
+        if (kind === "camera") return filmCamera();
+        if (kind === "clapper") return clapper();
+        return new THREE.Mesh(shapes[kind], mats[kind]);
+      };
+
+      // each orbiter rocks gently on its own axis so its depth shows, while its
+      // face keeps pointing out of the ring
       const flippers: { obj: InstanceType<typeof THREE.Group>; rate: number; phase: number }[] = [];
       ORBITERS.forEach((kind, i) => {
         const pivot = new THREE.Group();
         pivot.rotation.y = (i / ORBITERS.length) * Math.PI * 2;
         const holder = new THREE.Group();
         holder.position.z = ORBIT;
-        holder.rotation.y = 0.35; // never quite edge-on
+        holder.rotation.z = (i % 2 ? 1 : -1) * 0.18; // a little tilt, like stickers
         const flip = new THREE.Group();
-        let item: InstanceType<typeof THREE.Object3D>;
-        if (kind === "coin") {
-          item = new THREE.Mesh(coinGeo, [sideMat, faceMat, faceMat]);
-          item.rotation.z = Math.PI / 2; // faces point along the orbit
-        } else {
-          item = voxels[kind].clone();
-          item.rotation.y = Math.PI / 2; // faces point along the orbit
-        }
-        flip.add(item);
+        flip.add(build(kind));
         holder.add(flip);
         pivot.add(holder);
         spin.add(pivot);
-        flippers.push({ obj: flip, rate: kind === "coin" ? 0.35 : 0.6 + (i % 3) * 0.15, phase: i * 1.3 });
+        flippers.push({ obj: flip, rate: 0.55 + (i % 3) * 0.15, phase: i * 1.3 });
       });
 
       const fit = () => {
@@ -272,13 +398,18 @@ export function PlanetScene() {
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
       let last = performance.now();
-      let t = 6; // start a few seconds in, so the still frame has coins on both sides
+      let t = 6; // start a few seconds in, so the still frame has emojis on both sides
       let raf = 0;
       let visible = true;
       const draw = () => {
         planet.rotation.y = (t / TURN) * Math.PI * 2;
         spin.rotation.y = (t / LAP) * Math.PI * 2;
-        for (const f of flippers) f.obj.rotation.y = Math.sin(t * f.rate + f.phase) * 0.9;
+        for (const f of flippers) f.obj.rotation.y = Math.sin(t * f.rate + f.phase) * 0.6;
+        // the clapstick snaps shut, then eases open again
+        for (const c of clapsticks) {
+          const u = Math.min(1, ((t + c.phase) % 3.2) / 0.6);
+          c.obj.rotation.z = 0.5 * (1 - (1 - u) ** 3);
+        }
         renderer.render(scene, camera);
       };
       const loop = (now: number) => {
@@ -317,14 +448,9 @@ export function PlanetScene() {
         io.disconnect();
         reduce.removeEventListener("change", kick);
         host.removeAttribute("data-ready");
-        coinGeo.dispose();
         disposables.forEach((d) => d.dispose());
         planet.geometry.dispose();
         (planet.material as InstanceType<typeof THREE.ShaderMaterial>).dispose();
-        faceMat.dispose();
-        sideMat.dispose();
-        face.dispose();
-        bump.dispose();
         env.dispose();
         renderer.dispose();
         renderer.domElement.remove();
