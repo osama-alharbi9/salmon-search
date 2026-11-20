@@ -12,18 +12,34 @@ import { cx } from "./cx";
  * above 12 wanted, one continuous bar. Hidden from screen readers because the
  * text ("3 of 3") says the same.
  */
-export function Meter({ matched, wanted, className }: { matched: number; wanted: number; className?: string }) {
+export function Meter({
+  matched,
+  wanted,
+  className,
+}: {
+  matched: number;
+  wanted: number;
+  className?: string;
+}) {
   if (wanted <= 0) return null;
   if (wanted > 12) {
     return (
-      <span className={cx("meter-bar", className)} style={{ width: 96 }} aria-hidden="true">
+      <span
+        className={cx("meter-bar", className)}
+        style={{ width: 96 }}
+        aria-hidden="true"
+      >
         <i style={{ width: `${Math.round((matched / wanted) * 100)}%` }} />
       </span>
     );
   }
   const width = wanted > 8 ? wanted * 8 + (wanted - 1) * 2 : 96;
   return (
-    <span className={cx("meter", wanted > 8 && "meter-dense", className)} style={{ width }} aria-hidden="true">
+    <span
+      className={cx("meter", wanted > 8 && "meter-dense", className)}
+      style={{ width }}
+      aria-hidden="true"
+    >
       {Array.from({ length: wanted }, (_, i) => (
         <i key={i} data-on={i < matched ? "true" : undefined} />
       ))}
@@ -37,6 +53,10 @@ export type ResultCardWork = {
   title: string;
   namespace: string;
   n_tropes?: number;
+  /** Small poster URL (TMDB), when known. */
+  poster?: string | null;
+  /** Release year, when known. */
+  year?: string | null;
 };
 
 export type ResultCardProps = {
@@ -81,7 +101,8 @@ export function ResultCard({
   const full = matched.length >= wanted && wanted > 0;
   const title = cleanTitle(work.title, work.namespace);
   const label = mediaLabel(work.namespace);
-  const tropes = work.n_tropes === undefined ? null : countLabel(work.n_tropes, "trope");
+  const tropes =
+    work.n_tropes === undefined ? null : countLabel(work.n_tropes, "trope");
   const extra = Math.max(0, missing.length - maxMissing);
   const shownMissing = open ? missing : missing.slice(0, maxMissing);
   const summary = `${label}${tropes ? `, ${tropes}` : ""}. Has ${matched.length} of ${wanted} ${wanted === 1 ? "trope" : "tropes"}.`;
@@ -91,19 +112,44 @@ export function ResultCard({
       <span className={cx("rank", full && "rank-full")} aria-hidden="true">
         {rank}
       </span>
-      <div className="rc-main">
-        <span className="visually-hidden">{rank}. </span>
-        {noLink ? (
-          <span className="rc-title">{title}</span>
-        ) : (
-          <Link className="rc-title" href={workHref(work.id)}>
-            {title}
-          </Link>
+      <div className={cx("rc-main", work.poster && "rc-main-poster")}>
+        {work.poster && (
+          // eslint-disable-next-line @next/next/no-img-element -- TMDB serves sized posters already
+          <img
+            className="rc-poster"
+            src={work.poster}
+            alt=""
+            width={48}
+            height={72}
+            loading="lazy"
+            decoding="async"
+          />
         )}
-        <span className="visually-hidden">, {summary}</span>
-        <div className="rc-meta" aria-hidden="true">
-          {label}
-          {tropes && <> · <span className="num">{tropes}</span></>}
+        <div className="rc-text">
+          <span className="visually-hidden">{rank}. </span>
+          {noLink ? (
+            <span className="rc-title">{title}</span>
+          ) : (
+            <Link className="rc-title" href={workHref(work.id)}>
+              {title}
+            </Link>
+          )}
+          <span className="visually-hidden">, {summary}</span>
+          <div className="rc-meta" aria-hidden="true">
+            {label}
+            {work.year && (
+              <>
+                {" "}
+                · <span className="num">{work.year}</span>
+              </>
+            )}
+            {tropes && (
+              <>
+                {" "}
+                · <span className="num">{tropes}</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="cov" aria-hidden="true">

@@ -37,6 +37,7 @@ Trope search needs no keys and no database server. These go in `backend/.env`:
 | `DATABASE_URL` | Postgres for accounts and saved searches. When empty, they use a SQLite file at `backend/data/salmon.db`. |
 | `SALMON_SESSION_SECRET` | A fixed key for login cookies. When empty, logins reset each time the server restarts. |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in. |
+| `TMDB_API_KEY` | Posters and release years from TMDB for films, TV and animation, in results and on work pages. Lookups are cached in `backend/data/tmdb_cache.sqlite`. |
 
 ## Example queries
 
@@ -122,6 +123,8 @@ The content comes from [TVTropes](https://tvtropes.org) and its contributors, un
 - Share anything you derive from the data, including the built artifacts, under the same license.
 
 The dataset's Hugging Face card lists Apache 2.0. That label comes from whoever published the dump and does not change the license of the underlying TVTropes text, so treat the data as CC BY-NC-SA.
+
+Posters come from [TMDB](https://www.themoviedb.org) when `TMDB_API_KEY` is set. This product uses the TMDB API but is not endorsed or certified by TMDB.
 
 The embedding model, [intfloat/multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small), is MIT licensed and is downloaded on first use.
 

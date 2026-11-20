@@ -27,3 +27,7 @@ export function ExternalLink({ href, children, noIcon, className, ...rest }: Ext
 /** The TVTropes licence credit used in the sidebar, footers and work pages. */
 export const TVTROPES_URL = "https://tvtropes.org";
 export const CC_BY_NC_SA_URL = "https://creativecommons.org/licenses/by-nc-sa/3.0/";
+
+/** TMDB credit, required wherever its posters show. */
+export const TMDB_URL = "https://www.themoviedb.org";
+export const TMDB_NOTICE = "This product uses the TMDB API but is not endorsed or certified by TMDB.";

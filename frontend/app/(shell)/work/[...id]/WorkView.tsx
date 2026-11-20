@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { api, isAbortError, type WorkDetail } from "@/app/lib/api";
+import { useMedia } from "@/app/lib/media";
 import { appHref, cleanTitle, countLabel, mediaLabel } from "@/app/lib/query";
 import {
   Banner,
@@ -10,15 +11,15 @@ import {
   EmptyState,
   ExternalLink,
   SaveWorkButton,
+  TMDB_NOTICE,
+  TMDB_URL,
 } from "@/app/ui";
 import { BackButton } from "./BackButton";
 import { TropeList } from "./TropeList";
 import { WorkSkeleton } from "./WorkSkeleton";
 
 type Load =
-  | { kind: "loading" }
-  | { kind: "error" }
-  | { kind: "ready"; work: WorkDetail };
+  { kind: "loading" } | { kind: "error" } | { kind: "ready"; work: WorkDetail };
 
 /** "NopeDoesNotExist" -> "Nope Does Not Exist", for "Search for it". */
 function slugWords(id: string): string {
@@ -30,9 +31,18 @@ function slugWords(id: string): string {
     .trim();
 }
 
-export function WorkView({ id, initial }: { id: string; initial: WorkDetail | null }) {
-  const [load, setLoad] = useState<Load>(initial ? { kind: "ready", work: initial } : { kind: "loading" });
+export function WorkView({
+  id,
+  initial,
+}: {
+  id: string;
+  initial: WorkDetail | null;
+}) {
+  const [load, setLoad] = useState<Load>(
+    initial ? { kind: "ready", work: initial } : { kind: "loading" },
+  );
   const [attempt, setAttempt] = useState(initial ? 0 : 1);
+  const art = useMedia([id])[id];
 
   // Fetch in the browser when the server could not (attempt > 0), and on Try again.
   useEffect(() => {
@@ -56,7 +66,10 @@ export function WorkView({ id, initial }: { id: string; initial: WorkDetail | nu
   const work = load.kind === "ready" ? load.work : null;
   useEffect(() => {
     if (!work || initial) return;
-    document.title = work.found && work.title ? `${cleanTitle(work.title, work.namespace)} · salmon` : "Work not found · salmon";
+    document.title =
+      work.found && work.title
+        ? `${cleanTitle(work.title, work.namespace)} · salmon`
+        : "Work not found · salmon";
   }, [work, initial]);
 
   if (load.kind === "loading") return <WorkSkeleton />;
@@ -99,7 +112,8 @@ export function WorkView({ id, initial }: { id: string; initial: WorkDetail | nu
           </>
         }
       >
-        There&apos;s no work at {id} in this dataset. Check the link, or search for it by title.
+        There&apos;s no work at {id} in this dataset. Check the link, or search
+        for it by title.
       </EmptyState>
     );
   }
@@ -113,29 +127,61 @@ export function WorkView({ id, initial }: { id: string; initial: WorkDetail | nu
     <article className="pt-2">
       <BackButton />
 
-      <header className="mt-8">
-        <p className="label muted">{mediaLabel(ns)}</p>
-        <h1 className="display-m mt-2 [overflow-wrap:anywhere]">{title}</h1>
-        <p className="body muted num mt-3">{countLabel(nTropes, "trope")}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button href={appHref([`like ${w.title}`])} size="m">
-            Find works like this
-          </Button>
-          <SaveWorkButton look="button" work={{ id: w.id ?? id, title: w.title, namespace: ns }} />
-          {w.url && (
-            <Button href={w.url} external variant="tertiary" size="m">
-              Open on TVTropes
+      <header className={art ? "wv-head wv-head-poster mt-8" : "wv-head mt-8"}>
+        {art && (
+          <a
+            className="wv-poster"
+            href={art.tmdb_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- TMDB serves sized posters already */}
+            <img
+              src={art.poster}
+              alt={`Poster for ${title}`}
+              width={184}
+              height={276}
+            />
+            <span className="visually-hidden"> (opens TMDB in a new tab)</span>
+          </a>
+        )}
+        <div className="wv-head-text">
+          <p className="label muted">
+            {mediaLabel(ns)}
+            {art?.year && <span className="num"> · {art.year}</span>}
+          </p>
+          <h1 className="display-m mt-2 [overflow-wrap:anywhere]">{title}</h1>
+          <p className="body muted num mt-3">{countLabel(nTropes, "trope")}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button href={appHref([`like ${w.title}`])} size="m">
+              Find works like this
             </Button>
-          )}
+            <SaveWorkButton
+              look="button"
+              work={{ id: w.id ?? id, title: w.title, namespace: ns }}
+            />
+            {w.url && (
+              <Button href={w.url} external variant="tertiary" size="m">
+                Open on TVTropes
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
-      <Card as="section" variant="medium" className="mt-10 md:p-8" aria-labelledby="about-heading">
+      <Card
+        as="section"
+        variant="medium"
+        className="mt-10 md:p-8"
+        aria-labelledby="about-heading"
+      >
         <h2 id="about-heading" className="h3">
           About
         </h2>
         {w.intro ? (
-          <p className="measure mt-3 whitespace-pre-line [overflow-wrap:anywhere]">{w.intro}</p>
+          <p className="measure mt-3 whitespace-pre-line [overflow-wrap:anywhere]">
+            {w.intro}
+          </p>
         ) : (
           <p className="muted mt-3">No description in this dataset.</p>
         )}
@@ -152,6 +198,13 @@ export function WorkView({ id, initial }: { id: string; initial: WorkDetail | nu
         Trope list and description from TVTropes, under{" "}
         <ExternalLink href={CC_BY_NC_SA_URL}>CC BY-NC-SA</ExternalLink>.{" "}
         {w.url && <ExternalLink href={w.url}>{title} on TVTropes</ExternalLink>}
+        {art && (
+          <>
+            {" "}
+            Poster from <ExternalLink href={TMDB_URL}>TMDB</ExternalLink>.{" "}
+            {TMDB_NOTICE}
+          </>
+        )}
       </p>
     </article>
   );

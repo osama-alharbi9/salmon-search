@@ -60,7 +60,7 @@ export function initials(user: Pick<AuthUser, "name" | "email"> | null): string 
   return (user.email[0] ?? "").toUpperCase();
 }
 
-const NO_CONFIG: ServerConfig = { google: false, vibe: false };
+const NO_CONFIG: ServerConfig = { google: false, vibe: false, tmdb: false };
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -90,7 +90,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       .finally(() => alive && setLoading(false));
     api
       .config()
-      .then((c) => alive && setConfig({ google: !!c.google, vibe: !!c.vibe }))
+      .then((c) => alive && setConfig({ google: !!c.google, vibe: !!c.vibe, tmdb: !!c.tmdb }))
       .catch(() => undefined)
       .finally(() => alive && setConfigLoaded(true));
     return () => {

@@ -8,7 +8,14 @@ export { Card, type CardProps, type CardVariant } from "./Card";
 export { Chip, MissingGroup, Tag, TropeLink, type ChipKind, type ChipProps } from "./Chip";
 export { cx } from "./cx";
 export { EmptyState, type EmptyStateProps } from "./EmptyState";
-export { CC_BY_NC_SA_URL, ExternalLink, TVTROPES_URL, type ExternalLinkProps } from "./ExternalLink";
+export {
+  CC_BY_NC_SA_URL,
+  ExternalLink,
+  TMDB_NOTICE,
+  TMDB_URL,
+  TVTROPES_URL,
+  type ExternalLinkProps,
+} from "./ExternalLink";
 export { FocusedBar, type FocusedBarProps } from "./FocusedBar";
 export { Icon, ICON_NAMES, type IconName, type IconProps } from "./Icon";
 export { IconButton, type IconButtonProps } from "./IconButton";

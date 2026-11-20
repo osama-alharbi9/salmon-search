@@ -572,6 +572,22 @@ a.card-nav:hover, button.card-nav:hover { background: var(--grey-200); }
 .rc-title { font: 600 18px/28px var(--font-text); color: var(--text); text-decoration: none; border-radius: 2px; overflow-wrap: break-word; }
 a.rc-title:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .rc-meta { font-size: 14px; line-height: 20px; color: var(--text-secondary); }
+.rc-main-poster { display: flex; gap: 16px; align-items: flex-start; }
+.rc-text { min-width: 0; }
+.rc-poster {
+  flex: none; width: 48px; height: 72px; object-fit: cover; border-radius: var(--radius-s, 8px);
+  background: var(--grey-100); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+@media (max-width: 767px) { .rc-poster { width: 40px; height: 60px; } .rc-main-poster { gap: 12px; } }
+/* work page header with a TMDB poster */
+.wv-head-poster { display: flex; gap: 32px; align-items: flex-start; }
+.wv-head-text { min-width: 0; }
+.wv-poster { flex: none; display: block; border-radius: var(--radius-m); overflow: hidden; box-shadow: 0 12px 32px -12px rgba(28, 22, 19, 0.35); }
+.wv-poster img { display: block; width: 184px; height: 276px; object-fit: cover; background: var(--grey-100); }
+@media (max-width: 767px) {
+  .wv-head-poster { gap: 16px; }
+  .wv-poster img { width: 104px; height: 156px; }
+}
 .cov { display: grid; justify-items: end; gap: 8px; padding-top: 2px; }
 .cov-val { font: 600 16px/24px var(--font-text); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rc > .ibtn { align-self: start; }

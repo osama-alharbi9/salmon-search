@@ -52,8 +52,17 @@ export type VdsSearchResponse = {
   medium: MediumFilter;
 };
 
-/** Optional server features. Both false when not set up (local dev). */
-export type ServerConfig = { google: boolean; vibe: boolean };
+/** Optional server features. All false when not set up (local dev). */
+export type ServerConfig = { google: boolean; vibe: boolean; tmdb: boolean };
+
+/** Poster art from TMDB for one work (POST /api/media). */
+export type WorkMedia = {
+  poster: string;
+  poster_small: string;
+  backdrop: string | null;
+  year: string | null;
+  tmdb_url: string;
+};
 
 // ── errors ────────────────────────────────────────────────────────────────────
 
@@ -232,6 +241,9 @@ export const api = {
     post<VibeResponse>("/api/vibe", { vibe }, signal),
   resolve: (phrases: string[], signal?: AbortSignal) =>
     post<ResolveResponse>("/api/resolve", { phrases }, signal),
+  /** TMDB posters for up to 50 work ids; null where TMDB has no match. */
+  media: (ids: string[], signal?: AbortSignal) =>
+    post<{ media: Record<string, WorkMedia | null> }>("/api/media", { ids }, signal),
   /** Raw item strings, including "like X" and filter clauses, unchanged. */
   vdsSearch: (items: string[], signal?: AbortSignal) =>
     post<VdsSearchResponse>("/api/vds_search", { items }, signal),
