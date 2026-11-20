@@ -116,6 +116,7 @@ def _parse_phrases(raw: str) -> list[str]:
 _VECS: np.ndarray | None = None
 _VOCAB: list[str] | None = None
 _FREQ: dict[str, int] | None = None
+_NORM_TO_TROPE: dict[str, str] = {}     # normalized trope name -> the trope works use
 _MODEL = None
 
 
@@ -140,6 +141,11 @@ def _ensure_artifacts() -> None:
     for rec in engine._WORKS.values():
         freq.update(rec["tropes"])
     _FREQ = dict(freq)
+    # Same normalized name spelled two ways: keep the spelling more works use.
+    # Tropes no work lists are left out, since they can never produce a result.
+    for name in sorted(_VOCAB, key=lambda t: _FREQ.get(t, 0)):
+        if _FREQ.get(name, 0) > 0:
+            _NORM_TO_TROPE[C.normalize_name(name)] = name
 
 
 def _ensure_model():
@@ -154,7 +160,11 @@ def _ensure_model():
 
 
 def resolve_phrases(phrases: list[str]) -> dict:
-    """Resolve each loose phrase to a real canonical trope via embeddings.
+    """Resolve each phrase to a real canonical trope.
+
+    A phrase that is already a trope's name resolves to that trope with sim 1.0,
+    ignoring case and punctuation, because e5 can place another trope closer ("Time
+    Travel" lands on "Mental Time Travel"). Anything else goes through embeddings.
 
     Returns {"resolved": [{phrase, trope, sim, count}], "unknown": [...]}.
     'unknown' holds phrases whose best match is too weak to trust as a trope.
@@ -163,15 +173,22 @@ def resolve_phrases(phrases: list[str]) -> dict:
     if not phrases:
         return {"resolved": [], "unknown": []}
     _ensure_artifacts()
-    model = _ensure_model()
-    qvecs = model.encode(
-        [f"query: {p}" for p in phrases],
-        convert_to_numpy=True, normalize_embeddings=True,
-    ).astype(np.float32)
+    exact = {p: _NORM_TO_TROPE[C.normalize_name(p)] for p in phrases
+             if C.normalize_name(p) in _NORM_TO_TROPE}
+    loose = [p for p in phrases if p not in exact]
+    matches: dict[str, tuple[str, float]] = {p: (t, 1.0) for p, t in exact.items()}
+    if loose:
+        qvecs = _ensure_model().encode(
+            [f"query: {p}" for p in loose],
+            convert_to_numpy=True, normalize_embeddings=True,
+        ).astype(np.float32)
+        for phrase, qv in zip(loose, qvecs):
+            name, _row, sim, _alts = S.resolve(qv, _VECS, _VOCAB, _FREQ)
+            matches[phrase] = (name, float(sim))
 
     resolved, unknown = [], []
-    for phrase, qv in zip(phrases, qvecs):
-        name, _row, sim, _alts = S.resolve(qv, _VECS, _VOCAB, _FREQ)
+    for phrase in phrases:
+        name, sim = matches[phrase]
         # A very weak best match means the phrase didn't land on a real trope.
         if sim < 0.80:
             unknown.append(phrase)
@@ -179,7 +196,7 @@ def resolve_phrases(phrases: list[str]) -> dict:
         resolved.append({
             "phrase": phrase,
             "trope": name,
-            "sim": round(float(sim), 3),
+            "sim": round(sim, 3),
             "count": int(_FREQ.get(name, 0)),
         })
     return {"resolved": resolved, "unknown": unknown}

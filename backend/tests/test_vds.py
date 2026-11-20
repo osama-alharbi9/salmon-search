@@ -58,6 +58,21 @@ def test_resolve_phrases_splits_known_and_unknown(fake_model):
     assert out["unknown"] == ["nothing like any trope"]
 
 
+def test_exact_trope_name_skips_the_model(monkeypatch):
+    def no_model():
+        raise AssertionError("an exact name must not need embeddings")
+    monkeypatch.setattr(vds, "_ensure_model", no_model)
+    out = vds.resolve_phrases(["The Caper", "the  CAPER!"])
+    assert [(r["trope"], r["sim"]) for r in out["resolved"]] == [("The Caper", 1.0)] * 2
+    assert out["unknown"] == []
+
+
+def test_exact_and_loose_phrases_keep_their_order(fake_model):
+    out = vds.resolve_phrases(["nothing like any trope", "the caper"])
+    assert [r["phrase"] for r in out["resolved"]] == ["the caper"]
+    assert out["unknown"] == ["nothing like any trope"]
+
+
 def test_search_with_tropes_and_a_filter(fake_model):
     out = vds.vds_search(["found family", "the caper", "movies only"])
     assert out["medium"]["include"] == ["Film"]
