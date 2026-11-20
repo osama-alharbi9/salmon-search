@@ -45,10 +45,9 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── 2. hero ── */
-.lp-hero { text-align: center; padding: 88px 0 64px; }
+.lp-hero { text-align: center; padding: 88px 0 0; }
 .lp-hero-h { max-width: 1120px; margin: 0 auto; }
 @media (min-width: 1024px) { .lp-hero-h .lp-ln { display: block; } }
-.lp-hero-sub { max-width: 580px; margin: 40px auto 0; }
 
 .lp-hero-form {
   display: flex; align-items: center; gap: 8px; max-width: 640px; min-height: 64px; margin: 40px auto 0;
@@ -66,10 +65,8 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-hero-input:focus, .lp-hero-input:focus-visible { outline: 0; }
 .lp-hero-input::-webkit-search-cancel-button { display: none; }
 .lp-hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
-.lp-hero-hint { margin-top: 20px; }
 @media (max-width: 767px) {
-  .lp-hero { padding: 48px 0 40px; }
-  .lp-hero-sub { margin-top: 24px; }
+  .lp-hero { padding: 48px 0 0; }
   .lp-hero-form {
     display: grid; gap: 12px; margin-top: 32px; padding: 0; border-radius: 0; min-height: 0;
     background: transparent; box-shadow: none;
@@ -315,7 +312,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 
 /* ── planet above the hero card (three.js, PlanetScene) ── */
-.lp-planet-wrap { padding: 32px 0 48px; overflow: hidden; }
+.lp-planet-wrap { margin-top: -48px; padding: 0 0 48px; overflow: hidden; }
 .lp-planet-stage {
   position: relative; width: min(100%, 1120px); margin: 0 auto;
   aspect-ratio: 3 / 2; max-height: 720px;
@@ -339,7 +336,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 .lp-planet-stage:has(.lp-planet-3d[data-ready]) .lp-planet-fallback { display: none; }
 @keyframes lp-turn { to { background-position: -200% 0; } }
 @media (max-width: 767px) {
-  .lp-planet-wrap { padding: 16px 0 32px; }
+  .lp-planet-wrap { margin-top: -16px; padding: 0 0 32px; }
   .lp-planet-stage { aspect-ratio: 5 / 4; }
 }
 @media (prefers-reduced-motion: reduce) { .lp-planet-map { animation: none; } }

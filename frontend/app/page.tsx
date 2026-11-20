@@ -142,18 +142,12 @@ export default function Landing() {
             <h1 id="hero-title" className="display-xl lp-hero-h">
               <span className="lp-ln">Name the tropes.</span> <span className="lp-ln">Find the story.</span>
             </h1>
-            <p className="body-l muted lp-hero-sub">
-              85,633 works. 33,164 tropes. 16 media types. Combine tropes and see which stories have the most of them.
-            </p>
             <HeroSearch id="hero-q" />
             <div className="lp-hero-actions">
               <a className={buttonClass("tertiary", "l")} href="#examples">
                 See examples
               </a>
             </div>
-            <p className="body-s muted lp-hero-hint">
-              Join tropes with +. Put like in front of a title to start from a work you know.
-            </p>
           </div>
         </section>
         <Planet />
