@@ -140,7 +140,7 @@ export default function Landing() {
         <section className="lp-hero" aria-labelledby="hero-title">
           <div className="mk-container">
             <h1 id="hero-title" className="display-xl lp-hero-h">
-              <span className="lp-ln">Name the tropes.</span> <span className="lp-ln">Find the story.</span>
+              <span className="lp-ln">Vibe,</span> <span className="lp-ln">don&apos;t search.</span>
             </h1>
             <HeroSearch id="hero-q" />
             <div className="lp-hero-actions">
