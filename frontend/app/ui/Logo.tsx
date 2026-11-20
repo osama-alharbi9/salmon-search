@@ -4,7 +4,7 @@ import Link from "next/link";
 // --salmon-950 eye and no window frame (DESIGN.md 4.6), plus the lowercase
 // wordmark in Archivo 900.
 
-const FISH_BODY =
+export const FISH_BODY =
   "M6 0h2v1h-2zM14 0h1v1h-1zM3 1h6v1h-6zM13 1h2v1h-2zM1 2h10v1h-10zM12 2h2v1h-2zM0 3h13v1h-13zM0 4h12v1h-12zM0 5h12v1h-12zM0 6h13v1h-13zM1 7h10v1h-10zM12 7h2v1h-2zM3 8h6v1h-6zM13 8h2v1h-2zM6 9h2v1h-2zM14 9h1v1h-1z";
 
 /** The fish mark alone. Decorative; size it with CSS (default 30 x 20). */

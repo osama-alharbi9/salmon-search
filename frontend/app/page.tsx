@@ -9,6 +9,7 @@ import { Footer } from "./_landing/Footer";
 import { HeroSearch } from "./_landing/HeroSearch";
 import { HeroStage } from "./_landing/HeroStage";
 import { MarketingNav } from "./_landing/MarketingNav";
+import { Planet } from "./_landing/Planet";
 import { ResultsBand } from "./_landing/ResultsBand";
 import { FilterSplit, TitleSplit } from "./_landing/Splits";
 import { StatsRow } from "./_landing/StatsRow";
@@ -156,6 +157,7 @@ export default function Landing() {
           </div>
         </section>
         <HeroStage />
+        <Planet />
 
         {/* 3. Proof numbers */}
         <StatsRow />
