@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { useSession } from "../lib/session";
 import { buttonClass, Icon, IconButton, Logo } from "../ui";
-import { REPO_URL } from "./data";
 
 // Marketing nav (DESIGN.md 5.8): logo, section links, Log in, "Open salmon".
 // Below lg the links fold into a "Menu" button that opens a full-width sheet
@@ -69,18 +68,6 @@ export function MarketingNav({ anchorBase = "", id }: Props) {
               </a>
             </li>
           ))}
-          <li>
-            <a
-              className="lp-nav-link"
-              href={REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-              <Icon name="external" size={16} />
-              <span className="visually-hidden"> (opens in a new tab)</span>
-            </a>
-          </li>
         </ul>
         <div className="lp-nav-right">
           {showLogin && (
@@ -113,19 +100,6 @@ export function MarketingNav({ anchorBase = "", id }: Props) {
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                className="lp-sheet-row"
-                href={REPO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={close}
-              >
-                GitHub
-                <span className="visually-hidden"> (opens in a new tab)</span>
-                <Icon name="external" size={20} />
-              </a>
-            </li>
             {showLogin && (
               <li>
                 <Link className="lp-sheet-row" href="/login" onClick={close}>

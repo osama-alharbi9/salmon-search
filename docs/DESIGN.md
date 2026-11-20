@@ -552,7 +552,7 @@ Below `lg` the same three items become a **bottom tab bar**: 64 tall plus the sa
 - Signed in: account button = 40 disc (`--grey-100`, initials 16/24 600 `--salmon-950`) + name or email 14/20 600 + 16 chevron. It opens the account menu: white, radius 16, `--shadow-float`, 280 wide, padding 8. Header: name 16/24 600 and email 14/20 `--text-secondary`. Items 44 tall, 14/20 600, radius 10, hover `--grey-50`: "Saved", "History", a hairline, "Log out". Esc and outside click close it; focus returns to the button.
 - Mobile: wordmark on the left (the sidebar is gone), account disc or "Log in" on the right.
 
-**Marketing nav.** 80 tall (64 mobile), white, on the 1120 container. Left: logo. Then links "How it works", "Examples", "Questions", "GitHub" (16/24 600 `--text`, 32 apart, underline on hover). Right: text link "Log in" and primary S "Open salmon". Mobile: logo, primary S "Open salmon", and a 40 icon button "Menu" that opens a full-width sheet with the links as 56 tall rows.
+**Marketing nav.** 80 tall (64 mobile), white, on the 1120 container. Left: logo. Then links "How it works", "Examples", "Questions" (16/24 600 `--text`, 32 apart, underline on hover). Right: text link "Log in" and primary S "Open salmon". Mobile: logo, primary S "Open salmon", and a 40 icon button "Menu" that opens a full-width sheet with the links as 56 tall rows.
 
 **Focused-flow bar** (log in, sign up). 72 tall, `--line-hair` bottom, logo left, close icon button 40 right ("Close and go back").
 
@@ -754,7 +754,7 @@ Container 1120. Bands alternate white and `--grey-100`. Section padding 128 / 96
 | 9 | **Who it's for** | white | `display-m` title, 2 large `--grey-100` cards (radius 32) with a 48 white icon disc, `display-s` title (Fans, Writers) and `body-m`. | m11, m19 |
 | 10 | **FAQ** | white | `display-m` title centred, accordion (5.16), 6 questions. | m13 |
 | 11 | **Closing band** | salmon | Full bleed, 420 tall, centred `display-l` in `--grey-900`, one `body-m` line, inverse L "Open salmon". | m14 (structure only), m02 |
-| 12 | **Footer** | grey | 4 link columns (salmon, Examples, Project, Data), hairline, logo + MIT line, then the centred licence paragraph (14/22) with the TVTropes CC BY-NC-SA credit. Footer links underlined. | m15, m16 |
+| 12 | **Footer** | grey | 3 link columns (salmon, Examples, Data; Data credits TVTropes and TMDB), hairline, logo. No GitHub links and no licence paragraph. Footer links underlined. | m15, m16 |
 
 Mobile: nav collapses (5.8), hero field 56 tall with Search full width under it, the stage shows 2 rows, splits stack media under text, the table becomes stacked rows with salmon pills.
 

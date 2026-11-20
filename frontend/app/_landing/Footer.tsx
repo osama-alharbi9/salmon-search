@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { CC_BY_NC_SA_URL, Logo, TMDB_NOTICE, TMDB_URL, TVTROPES_URL } from "../ui";
+import { Logo, TMDB_URL, TVTROPES_URL } from "../ui";
 import { appHref } from "../lib/query";
-import { DATASET_URL, LICENSE_URL, MODEL_URL, README_URL, REPO_URL } from "./data";
+import { DATASET_URL, MODEL_URL } from "./data";
 
-// Landing footer (DESIGN.md 9.1 #12, m15, m16): four link columns, a hairline,
-// the logo with the MIT line, then the centred TVTropes licence paragraph.
+// Landing footer (DESIGN.md 9.1 #12, m15, m16): three link columns, a hairline,
+// then the logo. The Data column credits TVTropes and TMDB.
 
 type FootLink = { label: string; href: string; external?: boolean };
 
@@ -26,14 +26,6 @@ const COLUMNS: { title: string; links: FootLink[] }[] = [
       { label: "Like Cowboy Bebop, anime only", href: appHref(["like Cowboy Bebop", "anime only"]) },
       { label: "The office", href: appHref(["the office"]) },
       { label: "Unreliable narrator, no fanfic", href: appHref(["unreliable narrator", "no fanfic"]) },
-    ],
-  },
-  {
-    title: "Project",
-    links: [
-      { label: "Source code on GitHub", href: REPO_URL, external: true },
-      { label: "README", href: README_URL, external: true },
-      { label: "MIT license", href: LICENSE_URL, external: true },
     ],
   },
   {
@@ -82,17 +74,7 @@ export function Footer() {
         </div>
         <div className="lp-foot-bottom">
           <Logo size="s" />
-          <p className="body-s muted">salmon&apos;s code is MIT licensed.</p>
         </div>
-        <p className="lp-foot-legal">
-          Trope data comes from <ExtA href={TVTROPES_URL}>TVTropes.org</ExtA> and its contributors under a{" "}
-          <ExtA href={CC_BY_NC_SA_URL}>
-            Creative Commons Attribution-NonCommercial-ShareAlike (CC BY-NC-SA) license
-          </ExtA>
-          . Each work in salmon links back to its page on TVTropes. Use of the data must stay non-commercial, and anything
-          built from it must be shared under the same license. Posters and ratings come from{" "}
-          <ExtA href={TMDB_URL}>TMDB</ExtA>. {TMDB_NOTICE}
-        </p>
       </div>
     </footer>
   );

@@ -3,10 +3,6 @@
 // figure from the README. Nothing is invented.
 import type { ResultCardWork } from "../ui";
 
-export const REPO_URL = "https://github.com/osama-alharbi9/salmon-search";
-export const README_URL = `${REPO_URL}#readme`;
-export const DATA_NOTES_URL = `${REPO_URL}#data-and-licensing`;
-export const LICENSE_URL = `${REPO_URL}/blob/HEAD/LICENSE`;
 export const DATASET_URL = "https://huggingface.co/datasets/RyokoExtra/TvTroper-Cleaned";
 export const MODEL_URL = "https://huggingface.co/intfloat/multilingual-e5-small";
 

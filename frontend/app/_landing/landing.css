@@ -273,7 +273,7 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 
 /* ── 12. footer (m15, m16) ── */
 .lp-footer { padding: 96px 0 64px; background: var(--grey-100); }
-.lp-foot-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px; }
+.lp-foot-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; }
 .lp-foot-h { font: 600 16px/24px var(--font-text); }
 .lp-foot-list { display: grid; gap: 4px; margin-top: 16px !important; }
 .lp-foot-link {
@@ -282,8 +282,6 @@ html:has(.lp-page) { scroll-behavior: smooth; }
 }
 .lp-foot-link:hover { color: var(--text); text-decoration-thickness: 2px; }
 .lp-foot-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: 48px; padding-top: 32px; border-top: var(--line-hair); }
-.lp-foot-legal { max-width: 720px; margin: 48px auto 0 !important; text-align: center; font-size: 14px; line-height: 22px; color: var(--text-secondary); }
-.lp-foot-legal .lp-foot-link { display: inline; padding: 0; }
 @media (max-width: 767px) {
   .lp-footer { padding: 64px 0 48px; }
   .lp-foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }

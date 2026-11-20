@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { buttonClass, ExternalLink, Icon, type IconName } from "./ui";
+import { buttonClass, Icon, type IconName } from "./ui";
 import { appHref } from "./lib/query";
 import { Accordion, type AccordionItem } from "./_landing/Accordion";
 import { ComparisonTable } from "./_landing/ComparisonTable";
-import { DATA_NOTES_URL, EXAMPLE_ITEMS } from "./_landing/data";
+import { EXAMPLE_ITEMS } from "./_landing/data";
 import { Deck } from "./_landing/Deck";
 import { Footer } from "./_landing/Footer";
 import { HeroSearch } from "./_landing/HeroSearch";
@@ -64,9 +64,6 @@ const FAQ: AccordionItem[] = [
           dump from Hugging Face and builds its index from it. The text is under a Creative Commons
           Attribution-NonCommercial-ShareAlike (CC BY-NC-SA) license, so salmon credits TVTropes and links each work
           back to its page. Anything built from the data has to stay non-commercial and use the same license.
-        </p>
-        <p>
-          <ExternalLink href={DATA_NOTES_URL}>Read the data and licensing notes</ExternalLink>
         </p>
       </>
     ),
